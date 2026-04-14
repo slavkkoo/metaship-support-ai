@@ -1,0 +1,252 @@
+{
+  "name": "1. MetaShip - Ingest Tickets to DB",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 6
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger",
+      "name": "Schedule (Every 6h)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 300]
+    },
+    {
+      "parameters": {},
+      "id": "manual-trigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [0, 100]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Даты за последние 7 дней\nconst now = new Date();\nconst weekAgo = new Date();\nweekAgo.setDate(now.getDate() - 7);\n\nreturn [{\n  json: {\n    cutoff_timestamp: weekAgo.toISOString(),\n    page: 1\n  }\n}];"
+      },
+      "id": "set-date-range",
+      "name": "Set Date Range",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [250, 200]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://pimpay.omnidesk.ru/api/cases.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {"name": "limit", "value": "100"},
+            {"name": "page", "value": "={{ $json.page }}"},
+            {"name": "sort", "value": "created_at"},
+            {"name": "order", "value": "desc"}
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {"name": "User-Agent", "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"},
+            {"name": "Accept", "value": "application/json"}
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "omnidesk-get-cases",
+      "name": "OmniDesk - Get Cases",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [500, 200],
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "REPLACE_WITH_YOUR_CREDENTIAL_ID",
+          "name": "OmniDesk API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// OmniDesk возвращает: {\"0\": {\"case\": {...}}, \"1\": {...}}\nconst response = $input.first().json;\nconst prevData = $('Set Date Range').first().json;\nconst cutoffDate = new Date(prevData.cutoff_timestamp);\n\n// Проверка на ошибки\nif (typeof response === 'string' || response.error) {\n  throw new Error('API Error: ' + JSON.stringify(response));\n}\n\n// Конвертируем объект с числовыми ключами в массив\nconst keys = Object.keys(response).filter(k => !isNaN(parseInt(k)));\nconst tickets = [];\n\nfor (const key of keys) {\n  const caseData = response[key].case || response[key];\n  \n  let createdAt;\n  try {\n    createdAt = new Date(caseData.created_at);\n  } catch (e) {\n    continue;\n  }\n  \n  // Только за последние 7 дней\n  if (createdAt >= cutoffDate) {\n    tickets.push({\n      ticket_id: caseData.case_id,\n      created_at: caseData.created_at,\n      closed_at: caseData.closed_at !== '-' ? caseData.closed_at : null,\n      status: caseData.status,\n      priority: caseData.priority,\n      channel: caseData.channel,\n      subject: caseData.subject,\n      labels: caseData.labels || [],\n      closing_speed: caseData.closing_speed !== '-' ? parseInt(caseData.closing_speed) : null\n    });\n  }\n}\n\nconsole.log(`Found ${tickets.length} tickets from last 7 days`);\n\nreturn tickets.map(ticket => ({ json: ticket }));"
+      },
+      "id": "parse-cases",
+      "name": "Parse Cases",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [750, 200]
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "loop-tickets",
+      "name": "Loop Tickets",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [1000, 200]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://pimpay.omnidesk.ru/api/cases/{{ $json.ticket_id }}/messages.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {"name": "User-Agent", "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"},
+            {"name": "Accept", "value": "application/json"}
+          ]
+        },
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "omnidesk-get-messages",
+      "name": "Get Messages",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1250, 200],
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "REPLACE_WITH_YOUR_CREDENTIAL_ID",
+          "name": "OmniDesk API"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const ticket = $('Loop Tickets').first().json;\nconst resp = $input.first().json;\n\n// Parse date to ISO\nfunction parseDate(dateStr) {\n  if (!dateStr || dateStr === '-') return null;\n  try { return new Date(dateStr).toISOString(); } catch { return null; }\n}\n\n// Strip HTML\nfunction stripHtml(s) {\n  if (!s) return null;\n  return String(s)\n    .replace(/<br\\s*\\/?>/gi, '\\n')\n    .replace(/<[^>]*>/g, ' ')\n    .replace(/&nbsp;/g, ' ')\n    .replace(/&amp;/g, '&')\n    .replace(/&lt;/g, '<')\n    .replace(/&gt;/g, '>')\n    .replace(/\\s+/g, ' ')\n    .trim()\n    .slice(0, 5000);\n}\n\n// Handle errors\nif (resp?.error || resp?.statusCode === 403) {\n  return [{\n    json: {\n      ticket_id: parseInt(ticket.ticket_id),\n      created_at: parseDate(ticket.created_at),\n      closed_at: parseDate(ticket.closed_at),\n      status: ticket.status || null,\n      priority: ticket.priority || null,\n      channel: ticket.channel || null,\n      subject: ticket.subject || null,\n      first_message_text: null,\n      labels: ticket.labels?.length > 0 ? ticket.labels : null,\n      closing_speed: ticket.closing_speed ? parseInt(ticket.closing_speed) : null\n    }\n  }];\n}\n\n// Parse messages\nconst numKeys = Object.keys(resp || {}).filter(k => !isNaN(parseInt(k)));\nconst msgs = numKeys.map(k => resp[k]?.message || resp[k]).filter(Boolean);\n\n// Get first customer message\nconst sortByDate = (a, b) => new Date(a.created_at) - new Date(b.created_at);\nconst customerMsgs = msgs.filter(m => !m.staff_id && !m.note).sort(sortByDate);\nlet first = customerMsgs[0] || msgs.sort(sortByDate)[0] || null;\n\nlet text = first ? (first.content || first.content_html || null) : null;\n\nreturn [{\n  json: {\n    ticket_id: parseInt(ticket.ticket_id),\n    created_at: parseDate(ticket.created_at),\n    closed_at: parseDate(ticket.closed_at),\n    status: ticket.status || null,\n    priority: ticket.priority || null,\n    channel: ticket.channel || null,\n    subject: ticket.subject || null,\n    first_message_text: stripHtml(text),\n    labels: ticket.labels?.length > 0 ? ticket.labels : null,\n    closing_speed: ticket.closing_speed ? parseInt(ticket.closing_speed) : null\n  }\n}];"
+      },
+      "id": "extract-message",
+      "name": "Extract First Message",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1500, 200]
+    },
+    {
+      "parameters": {
+        "amount": 300,
+        "unit": "milliseconds"
+      },
+      "id": "wait",
+      "name": "Wait 300ms",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [1750, 200]
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "tableId": "support_tickets",
+        "conflictType": "columnValue",
+        "columnToMatchOn": "ticket_id",
+        "dataToSend": "defineBelow",
+        "fieldsUi": {
+          "fieldValues": [
+            {"fieldName": "ticket_id", "fieldValue": "={{ $json.ticket_id }}"},
+            {"fieldName": "created_at", "fieldValue": "={{ $json.created_at }}"},
+            {"fieldName": "closed_at", "fieldValue": "={{ $json.closed_at }}"},
+            {"fieldName": "status", "fieldValue": "={{ $json.status }}"},
+            {"fieldName": "priority", "fieldValue": "={{ $json.priority }}"},
+            {"fieldName": "channel", "fieldValue": "={{ $json.channel }}"},
+            {"fieldName": "subject", "fieldValue": "={{ $json.subject }}"},
+            {"fieldName": "first_message_text", "fieldValue": "={{ $json.first_message_text }}"},
+            {"fieldName": "labels", "fieldValue": "={{ $json.labels }}"},
+            {"fieldName": "closing_speed", "fieldValue": "={{ $json.closing_speed }}"}
+          ]
+        }
+      },
+      "id": "supabase-upsert",
+      "name": "Supabase Upsert",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [2000, 200],
+      "credentials": {
+        "supabaseApi": {
+          "id": "REPLACE_WITH_YOUR_CREDENTIAL_ID",
+          "name": "Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "id": "aggregate-results",
+      "name": "Aggregate Results",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [2500, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.first().json.data || [];\nconst count = items.length;\n\nreturn [{\n  json: {\n    success: true,\n    tickets_processed: count,\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "summary",
+      "name": "Summary",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2750, 200]
+    }
+  ],
+  "connections": {
+    "Schedule (Every 6h)": {
+      "main": [[{"node": "Set Date Range", "type": "main", "index": 0}]]
+    },
+    "Manual Trigger": {
+      "main": [[{"node": "Set Date Range", "type": "main", "index": 0}]]
+    },
+    "Set Date Range": {
+      "main": [[{"node": "OmniDesk - Get Cases", "type": "main", "index": 0}]]
+    },
+    "OmniDesk - Get Cases": {
+      "main": [[{"node": "Parse Cases", "type": "main", "index": 0}]]
+    },
+    "Parse Cases": {
+      "main": [[{"node": "Loop Tickets", "type": "main", "index": 0}]]
+    },
+    "Loop Tickets": {
+      "main": [
+        [{"node": "Get Messages", "type": "main", "index": 0}],
+        [{"node": "Aggregate Results", "type": "main", "index": 0}]
+      ]
+    },
+    "Get Messages": {
+      "main": [[{"node": "Extract First Message", "type": "main", "index": 0}]]
+    },
+    "Extract First Message": {
+      "main": [[{"node": "Wait 300ms", "type": "main", "index": 0}]]
+    },
+    "Wait 300ms": {
+      "main": [[{"node": "Supabase Upsert", "type": "main", "index": 0}]]
+    },
+    "Supabase Upsert": {
+      "main": [[{"node": "Loop Tickets", "type": "main", "index": 0}]]
+    },
+    "Aggregate Results": {
+      "main": [[{"node": "Summary", "type": "main", "index": 0}]]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "timeout": 1800
+  },
+  "tags": ["ingest", "omnidesk", "supabase"]
+}

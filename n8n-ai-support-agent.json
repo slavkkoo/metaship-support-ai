@@ -1,0 +1,184 @@
+{
+  "name": "MetaShip AI Support Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "support-ticket",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook - New Ticket",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 100],
+      "webhookId": "support-ticket-webhook"
+    },
+    {
+      "parameters": {},
+      "id": "manual-trigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [0, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Извлекаем данные тикета из webhook или manual input\nconst input = $input.first().json;\n\n// Поддержка разных форматов входных данных\nlet ticketData = {\n  ticket_id: input.case_id || input.ticket_id || input.id || 'manual-test',\n  subject: input.subject || '',\n  question: input.content || input.first_message_text || input.message || input.body || '',\n  channel: input.channel || 'api',\n  client_name: input.user_name || input.client_name || 'Unknown',\n  created_at: input.created_at || new Date().toISOString()\n};\n\n// Очистка HTML если есть\nfunction stripHtml(s) {\n  if (!s) return '';\n  return String(s)\n    .replace(/<br\\s*\\/?>/gi, '\\n')\n    .replace(/<[^>]*>/g, ' ')\n    .replace(/&nbsp;/g, ' ')\n    .replace(/&amp;/g, '&')\n    .replace(/&lt;/g, '<')\n    .replace(/&gt;/g, '>')\n    .replace(/\\s+/g, ' ')\n    .trim();\n}\n\nticketData.question = stripHtml(ticketData.question);\nticketData.subject = stripHtml(ticketData.subject);\n\n// Объединяем subject и question для полного контекста\nticketData.full_question = ticketData.subject \n  ? `${ticketData.subject}\\n\\n${ticketData.question}`\n  : ticketData.question;\n\nreturn [{ json: ticketData }];"
+      },
+      "id": "extract-question",
+      "name": "Extract Question",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [250, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "// FAQ база знаний (встроенная для скорости)\n// В продакшене можно загружать из Supabase или файла\nconst FAQ_DATA = {\n  \"keywords\": {\n    \"сдэк|cdek|сдек\": \"СД: СДЭК\",\n    \"dalli|далли\": \"СД: Dalli\",\n    \"5post|5пост|пятерочка\": \"СД: 5Post\",\n    \"почта.*росси|почтой|ПР\": \"СД: Почта России\",\n    \"яндекс.*доставк|yandex\": \"СД: Яндекс Доставка\",\n    \"пэк|pek\": \"СД: ПЭК\",\n    \"dpd|дпд\": \"СД: DPD\",\n    \"boxberry|боксберри\": \"СД: Boxberry\",\n    \"склад|warehouse\": \"ЛК: Склад\",\n    \"индекс|postal.*code\": \"ЛК: Склад\",\n    \"магазин|shop|настройк\": \"ЛК: Настройки магазина\",\n    \"виджет|widget\": \"Виджет\",\n    \"оффер|offer|тариф\": \"API: Офферы\",\n    \"создан.*заказ|order.*creat|POST.*order\": \"API: Создание заказа\",\n    \"статус|status|tracking\": \"API: Статусы\",\n    \"партия|batch|ф103\": \"API: Партии\",\n    \"этикетк|label|штрих.*код|barcode\": \"Документы: Этикетки\",\n    \"накладн|invoice\": \"Документы: Накладная\",\n    \"возврат|return\": \"Типы заказов: Возвраты\",\n    \"курьер|courier\": \"Типы заказов: Курьерские\",\n    \"многомест|places|место\": \"Типы заказов: Многоместные\",\n    \"наложен.*платеж|cod|payment\": \"Оплата: НП\",\n    \"ндс|vat\": \"Оплата: НДС\",\n    \"500|502|503|504|timeout|ошибк.*сервер\": \"Ошибки: Timeout/5xx\",\n    \"401|403|авториз|unauthorized|токен|token\": \"API: Авторизация\",\n    \"битрикс|1с|bitrix\": \"Интеграции: Битрикс\"\n  },\n  \"categories\": {\n    \"СД: СДЭК\": {\n      \"typical_answers\": [\n        \"Для выбора ПВЗ СДЭК используйте точный адрес из справочника СДЭК\",\n        \"Редактирование заказа СДЭК: используется PATCH метод, доступно до передачи в СД\",\n        \"Тарифы СДЭК: проверьте настройки тарификатора в ЛК клиента\"\n      ],\n      \"escalation_keywords\": [\"зависш\", \"не создается\", \"ошибка сдэк\"]\n    },\n    \"СД: Dalli\": {\n      \"typical_answers\": [\n        \"Для Dalli используется PUT метод редактирования (полное обновление)\",\n        \"Интервалы доставки Dalli заполняются автоматически\",\n        \"Многоместные заказы Dalli: укажите places[] с уникальными barcode\"\n      ],\n      \"escalation_keywords\": [\"не работает далли\"]\n    },\n    \"ЛК: Склад\": {\n      \"typical_answers\": [\n        \"Индекс подтягивается из сервиса Dadata по введенному адресу\",\n        \"Если индекс не найден - используйте полный адрес с регионом\",\n        \"Для смены склада отгрузки используйте warehouse_id в запросе\"\n      ],\n      \"escalation_keywords\": [\"не могу выбрать склад\"]\n    },\n    \"API: Создание заказа\": {\n      \"typical_answers\": [\n        \"Обязательные поля: receiver, deliveryType, places[], payment\",\n        \"Для многоместных заказов: places[].barcode обязателен\",\n        \"deliverySum передается в payment.deliverySum\"\n      ],\n      \"escalation_keywords\": [\"не создается заказ\", \"ошибка создания\"]\n    },\n    \"API: Статусы\": {\n      \"typical_answers\": [\n        \"GET /v2/orders/{id}/details - детальная информация о заказе\",\n        \"Статусы: created, accepted, in_delivery, delivered, returned\",\n        \"Webhook уведомления настраиваются в ЛК в разделе Интеграции\"\n      ],\n      \"escalation_keywords\": [\"статус не обновляется\"]\n    },\n    \"Ошибки: Timeout/5xx\": {\n      \"typical_answers\": [\n        \"500/502/503/504 - временные ошибки сервера, повторите запрос через 5-10 секунд\",\n        \"При постоянных 5xx ошибках - сообщите нам для анализа\",\n        \"Timeout - увеличьте таймаут запроса до 30 секунд\"\n      ],\n      \"escalation_keywords\": [\"постоянн\", \"не работает\"]\n    },\n    \"API: Авторизация\": {\n      \"typical_answers\": [\n        \"401 Unauthorized - проверьте токен в заголовке Authorization: Bearer {token}\",\n        \"403 Forbidden - у токена нет доступа к данному ресурсу\",\n        \"Токен можно получить в ЛК -> Настройки -> API\"\n      ],\n      \"escalation_keywords\": []\n    }\n  }\n};\n\nconst ticket = $input.first().json;\nconst question = (ticket.full_question || '').toLowerCase();\n\n// Поиск категорий по ключевым словам\nlet matchedCategories = [];\nfor (const [pattern, category] of Object.entries(FAQ_DATA.keywords)) {\n  const regex = new RegExp(pattern, 'i');\n  if (regex.test(question)) {\n    matchedCategories.push(category);\n  }\n}\n\n// Убираем дубликаты\nmatchedCategories = [...new Set(matchedCategories)];\n\n// Собираем релевантные ответы\nlet relevantFAQ = [];\nlet needsEscalation = false;\n\nfor (const category of matchedCategories) {\n  const catData = FAQ_DATA.categories[category];\n  if (catData) {\n    relevantFAQ.push({\n      category: category,\n      answers: catData.typical_answers || []\n    });\n    \n    // Проверяем на эскалацию\n    for (const keyword of (catData.escalation_keywords || [])) {\n      if (question.includes(keyword)) {\n        needsEscalation = true;\n      }\n    }\n  }\n}\n\n// Если категории не найдены\nif (matchedCategories.length === 0) {\n  matchedCategories = ['Общий вопрос'];\n  needsEscalation = true;\n}\n\nreturn [{\n  json: {\n    ...ticket,\n    matched_categories: matchedCategories,\n    relevant_faq: relevantFAQ,\n    needs_escalation: needsEscalation,\n    faq_context: relevantFAQ.map(f => \n      `[${f.category}]\\n${f.answers.join('\\n')}`\n    ).join('\\n\\n')\n  }\n}];"
+      },
+      "id": "search-faq",
+      "name": "Search FAQ",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [500, 200]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json;\n\nconst systemPrompt = `Ты - AI-ассистент службы поддержки MetaShip (агрегатор доставки).\n\nТвоя задача: составить черновик ответа на вопрос клиента для оператора поддержки.\n\nПРАВИЛА:\n1. Отвечай на русском языке\n2. Будь вежлив и профессионален\n3. Используй информацию из FAQ если она релевантна\n4. Если не уверен - НЕ выдумывай, напиши что нужна консультация оператора\n5. Структурируй ответ: приветствие, ответ по существу, предложение помощи\n6. Не используй markdown разметку (**, ## и т.д.) - только plain text\n7. Если вопрос требует доступа к данным клиента (ИНН, GUID заказа) - запроси их\n\nКОНТЕКСТ MetaShip:\n- Агрегатор служб доставки (СДЭК, Dalli, 5Post, Почта России, ПЭК, DPD, Boxberry, Яндекс Доставка)\n- API для интеграции (REST, JSON-RPC)\n- Личный кабинет (ЛК) для ручного создания заказов\n- Виджет для сайтов клиентов\n- Основные сущности: заказы (orders), офферы (offers), партии (batches), склады (warehouses)`;\n\nconst userMessage = `ВОПРОС КЛИЕНТА:\n${data.full_question}\n\nОПРЕДЕЛЕННЫЕ КАТЕГОРИИ: ${data.matched_categories.join(', ')}\n\nРЕЛЕВАНТНАЯ ИНФОРМАЦИЯ ИЗ FAQ:\n${data.faq_context || 'Нет релевантной информации'}\n\n${data.needs_escalation ? '⚠️ ВНИМАНИЕ: Вопрос может требовать эскалации на оператора' : ''}\n\nСоставь черновик ответа для оператора.`;\n\nreturn [{\n  json: {\n    ...data,\n    systemPrompt: systemPrompt,\n    userMessage: userMessage\n  }\n}];"
+      },
+      "id": "build-prompt",
+      "name": "Build AI Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [750, 200]
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "model": "gpt-4o-mini",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "={{ $json.systemPrompt }}"
+            },
+            {
+              "role": "user",
+              "content": "={{ $json.userMessage }}"
+            }
+          ]
+        },
+        "options": {
+          "maxTokens": 1000,
+          "temperature": 0.3
+        }
+      },
+      "id": "openai-generate",
+      "name": "AI - Generate Response",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.4,
+      "position": [1000, 200],
+      "credentials": {
+        "openAiApi": {
+          "id": "REPLACE_WITH_YOUR_CREDENTIAL_ID",
+          "name": "OpenAI API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const ticketData = $('Search FAQ').first().json;\nconst aiResponse = $input.first().json;\n\nlet draftResponse = aiResponse.message?.content || aiResponse.choices?.[0]?.message?.content || 'Ошибка генерации ответа';\n\n// Формируем сообщение для оператора\nconst escalationIcon = ticketData.needs_escalation ? '⚠️ ' : '';\nconst categories = ticketData.matched_categories.join(', ');\n\nconst telegramMessage = `${escalationIcon}📩 *Новый тикет #${ticketData.ticket_id}*\n\n👤 Клиент: ${ticketData.client_name}\n📂 Категории: ${categories}\n📅 ${new Date().toLocaleString('ru-RU')}\n\n❓ *Вопрос:*\n${ticketData.full_question.substring(0, 500)}${ticketData.full_question.length > 500 ? '...' : ''}\n\n✍️ *Черновик ответа:*\n${draftResponse}\n\n${ticketData.needs_escalation ? '\\n⚠️ _Требуется внимание оператора_' : '✅ _Готово к отправке с проверкой_'}`;\n\nreturn [{\n  json: {\n    ticket_id: ticketData.ticket_id,\n    client_name: ticketData.client_name,\n    categories: categories,\n    question: ticketData.full_question,\n    draft_response: draftResponse,\n    needs_escalation: ticketData.needs_escalation,\n    telegram_message: telegramMessage,\n    generated_at: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "format-response",
+      "name": "Format Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1250, 200]
+    },
+    {
+      "parameters": {
+        "chatId": "REPLACE_WITH_YOUR_CHAT_ID",
+        "text": "={{ $json.telegram_message }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "telegram-send",
+      "name": "Telegram - Send to Operator",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1500, 200],
+      "credentials": {
+        "telegramApi": {
+          "id": "REPLACE_WITH_YOUR_CREDENTIAL_ID",
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "tableId": "ai_responses_log",
+        "dataToSend": "defineBelow",
+        "fieldsUi": {
+          "fieldValues": [
+            {"fieldName": "ticket_id", "fieldValue": "={{ $json.ticket_id }}"},
+            {"fieldName": "question", "fieldValue": "={{ $json.question }}"},
+            {"fieldName": "draft_response", "fieldValue": "={{ $json.draft_response }}"},
+            {"fieldName": "categories", "fieldValue": "={{ $json.categories }}"},
+            {"fieldName": "needs_escalation", "fieldValue": "={{ $json.needs_escalation }}"},
+            {"fieldName": "generated_at", "fieldValue": "={{ $json.generated_at }}"}
+          ]
+        }
+      },
+      "id": "supabase-log",
+      "name": "Supabase - Log Response",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1500, 400],
+      "credentials": {
+        "supabaseApi": {
+          "id": "REPLACE_WITH_YOUR_CREDENTIAL_ID",
+          "name": "Supabase MetaShip"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook - New Ticket": {
+      "main": [[{"node": "Extract Question", "type": "main", "index": 0}]]
+    },
+    "Manual Trigger": {
+      "main": [[{"node": "Extract Question", "type": "main", "index": 0}]]
+    },
+    "Extract Question": {
+      "main": [[{"node": "Search FAQ", "type": "main", "index": 0}]]
+    },
+    "Search FAQ": {
+      "main": [[{"node": "Build AI Prompt", "type": "main", "index": 0}]]
+    },
+    "Build AI Prompt": {
+      "main": [[{"node": "AI - Generate Response", "type": "main", "index": 0}]]
+    },
+    "AI - Generate Response": {
+      "main": [[{"node": "Format Response", "type": "main", "index": 0}]]
+    },
+    "Format Response": {
+      "main": [
+        [{"node": "Telegram - Send to Operator", "type": "main", "index": 0}],
+        [{"node": "Supabase - Log Response", "type": "main", "index": 0}]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "timeout": 120
+  },
+  "staticData": null,
+  "tags": ["support", "ai-agent", "metaship", "auto-response"],
+  "triggerCount": 2
+}

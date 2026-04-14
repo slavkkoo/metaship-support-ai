@@ -1,0 +1,26 @@
+{
+  "name": "omnidesk-ticket-ingestion",
+  "version": "1.0.0",
+  "description": "Stage 1: Ingest support tickets from Omnidesk to Supabase",
+  "main": "ingest-tickets.js",
+  "type": "module",
+  "scripts": {
+    "ingest": "node ingest-tickets.js",
+    "test": "node ingest-tickets.js --dry-run"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "dotenv": "^16.3.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "omnidesk",
+    "supabase",
+    "ticket-ingestion",
+    "support-analytics"
+  ],
+  "author": "",
+  "license": "ISC"
+}
