@@ -4,35 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MetaShip Support AI</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --glass-bg: rgba(255, 255, 255, 0.08);
-            --glass-border: rgba(255, 255, 255, 0.12);
-            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-            --glass-blur: 20px;
+            --bg: #f5f5f7;
+            --surface: #ffffff;
+            --text-primary: #1d1d1f;
+            --text-secondary: #86868b;
+            --text-tertiary: #aeaeb2;
+            --border: rgba(0, 0, 0, 0.06);
+            --border-strong: rgba(0, 0, 0, 0.1);
 
-            --text-primary: rgba(255, 255, 255, 0.95);
-            --text-secondary: rgba(255, 255, 255, 0.65);
-            --text-muted: rgba(255, 255, 255, 0.4);
+            --accent: #0071e3;
+            --accent-hover: #0077ed;
+            --accent-bg: rgba(0, 113, 227, 0.08);
 
-            --accent-primary: #6366f1;
-            --accent-glow: rgba(99, 102, 241, 0.4);
-            --accent-soft: rgba(99, 102, 241, 0.15);
+            --success: #34c759;
+            --success-bg: rgba(52, 199, 89, 0.1);
+            --warning: #ff9500;
+            --warning-bg: rgba(255, 149, 0, 0.1);
+            --danger: #ff3b30;
+            --danger-bg: rgba(255, 59, 48, 0.1);
 
-            --success: #10b981;
-            --success-glow: rgba(16, 185, 129, 0.4);
-            --warning: #f59e0b;
-            --warning-glow: rgba(245, 158, 11, 0.4);
-            --danger: #ef4444;
-            --danger-glow: rgba(239, 68, 68, 0.4);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
 
-            --gradient-1: #667eea;
-            --gradient-2: #764ba2;
-            --gradient-3: #f093fb;
-            --gradient-4: #f5576c;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.08);
+
+            --transition: 0.2s ease;
         }
 
         * {
@@ -43,80 +45,16 @@
 
         html {
             font-size: 16px;
-            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         body {
-            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
-            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', sans-serif;
+            background: var(--bg);
             color: var(--text-primary);
-            line-height: 1.6;
-            overflow-x: hidden;
-            background: linear-gradient(135deg, #0f0c29 0%, #1a1a3e 25%, #24243e 50%, #302b63 75%, #0f0c29 100%);
-            background-attachment: fixed;
-        }
-
-        /* Animated background orbs */
-        .bg-orbs {
-            position: fixed;
-            inset: 0;
-            overflow: hidden;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.5;
-            animation: float 20s ease-in-out infinite;
-        }
-
-        .orb-1 {
-            width: 600px;
-            height: 600px;
-            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
-            top: -200px;
-            left: -200px;
-            animation-delay: 0s;
-        }
-
-        .orb-2 {
-            width: 500px;
-            height: 500px;
-            background: linear-gradient(135deg, var(--gradient-3), var(--gradient-4));
-            bottom: -150px;
-            right: -150px;
-            animation-delay: -7s;
-        }
-
-        .orb-3 {
-            width: 400px;
-            height: 400px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            animation-delay: -14s;
-            opacity: 0.3;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            25% { transform: translate(30px, -30px) scale(1.05); }
-            50% { transform: translate(-20px, 20px) scale(0.95); }
-            75% { transform: translate(20px, 10px) scale(1.02); }
-        }
-
-        /* Glass panel base */
-        .glass {
-            background: var(--glass-bg);
-            backdrop-filter: blur(var(--glass-blur));
-            -webkit-backdrop-filter: blur(var(--glass-blur));
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            box-shadow: var(--glass-shadow);
+            line-height: 1.5;
+            min-height: 100vh;
         }
 
         /* Header */
@@ -124,618 +62,106 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            padding: 16px 32px;
-            background: rgba(15, 12, 41, 0.6);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.72);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid var(--border);
         }
 
         .header-inner {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
+            padding: 0 24px;
+            height: 52px;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .brand-icon {
-            width: 44px;
-            height: 44px;
-            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            box-shadow: 0 4px 20px var(--accent-glow);
-        }
-
-        .brand-text {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .brand-name {
-            font-size: 20px;
-            font-weight: 600;
-            letter-spacing: -0.5px;
-            background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.8) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .brand-tag {
-            font-size: 11px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: var(--text-muted);
-        }
-
-        .status-badge {
+        .logo {
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 10px 18px;
-            border-radius: 100px;
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.2px;
+        }
+
+        .logo-icon {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #5e5ce6, #bf5af2);
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
             font-size: 13px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .status-badge.online {
-            background: rgba(16, 185, 129, 0.15);
-            color: var(--success);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-        }
-
-        .status-badge.offline {
-            background: rgba(239, 68, 68, 0.15);
-            color: var(--danger);
-            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: var(--text-secondary);
         }
 
         .status-dot {
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            animation: pulse 2s ease-in-out infinite;
+            background: var(--text-tertiary);
         }
 
-        .status-badge.online .status-dot {
+        .status.online .status-dot {
             background: var(--success);
-            box-shadow: 0 0 12px var(--success-glow);
         }
 
-        .status-badge.offline .status-dot {
+        .status.offline .status-dot {
             background: var(--danger);
-            box-shadow: 0 0 12px var(--danger-glow);
-            animation: none;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.6; transform: scale(1.2); }
-        }
-
-        /* Main layout */
+        /* Main */
         .main {
-            position: relative;
-            z-index: 1;
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 40px 32px 80px;
+            padding: 48px 24px 80px;
         }
 
+        /* Hero */
         .hero {
             text-align: center;
             margin-bottom: 48px;
         }
 
         .hero-title {
-            font-size: clamp(32px, 5vw, 48px);
+            font-size: 48px;
             font-weight: 700;
-            letter-spacing: -1px;
-            margin-bottom: 12px;
-            background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.7) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            letter-spacing: -0.5px;
+            color: var(--text-primary);
+            margin-bottom: 8px;
         }
 
         .hero-subtitle {
-            font-size: 16px;
+            font-size: 19px;
             color: var(--text-secondary);
-            max-width: 500px;
-            margin: 0 auto;
+            font-weight: 400;
         }
 
-        .workspace {
-            display: grid;
-            grid-template-columns: 420px 1fr;
-            gap: 32px;
-            align-items: start;
+        /* Cards */
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
         }
 
-        @media (max-width: 1100px) {
-            .workspace {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Input panel */
-        .input-panel {
-            position: sticky;
-            top: 100px;
-        }
-
-        .panel-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 28px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid var(--glass-border);
-        }
-
-        .panel-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--accent-soft);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-        }
-
-        .panel-title {
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        .form-group {
-            margin-bottom: 24px;
-        }
-
-        .form-label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-secondary);
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .form-label .optional {
-            font-size: 11px;
-            color: var(--text-muted);
-            text-transform: none;
-            letter-spacing: 0;
-        }
-
-        .input, .textarea {
-            width: 100%;
-            padding: 16px 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            font-family: inherit;
-            font-size: 15px;
-            color: var(--text-primary);
-            transition: all 0.3s ease;
-        }
-
-        .input::placeholder, .textarea::placeholder {
-            color: var(--text-muted);
-        }
-
-        .input:hover, .textarea:hover {
-            border-color: rgba(255, 255, 255, 0.2);
-            background: rgba(255, 255, 255, 0.07);
-        }
-
-        .input:focus, .textarea:focus {
-            outline: none;
-            border-color: var(--accent-primary);
-            background: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 0 0 4px var(--accent-soft);
-        }
-
-        .textarea {
-            min-height: 160px;
-            resize: vertical;
-            line-height: 1.7;
-        }
-
-        /* Buttons */
-        .actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 32px;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 16px 28px;
-            border: none;
-            border-radius: 14px;
-            font-family: inherit;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-primary {
-            flex: 1;
-            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
-            color: white;
-            box-shadow: 0 4px 20px var(--accent-glow);
-        }
-
-        .btn-primary::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, var(--gradient-2), var(--gradient-1));
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .btn-primary:hover:not(:disabled)::before {
-            opacity: 1;
-        }
-
-        .btn-primary:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px var(--accent-glow);
-        }
-
-        .btn-primary:active:not(:disabled) {
-            transform: translateY(0);
-        }
-
-        .btn-primary:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .btn-primary span, .btn-primary .spinner {
-            position: relative;
-            z-index: 1;
-        }
-
-        .btn-ghost {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-secondary);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .btn-ghost:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text-primary);
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .spinner {
-            width: 18px;
-            height: 18px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-top-color: white;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Output panel */
-        .output-panel {
-            min-height: 500px;
-        }
-
-        /* Empty state */
-        .empty-state {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 80px 40px;
-            min-height: 400px;
-        }
-
-        .empty-icon {
-            width: 100px;
-            height: 100px;
-            background: var(--accent-soft);
-            border-radius: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 48px;
-            margin-bottom: 28px;
-            animation: float-icon 4s ease-in-out infinite;
-        }
-
-        @keyframes float-icon {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .empty-title {
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 12px;
-        }
-
-        .empty-text {
-            font-size: 15px;
-            color: var(--text-secondary);
-            max-width: 320px;
-            line-height: 1.7;
-        }
-
-        /* Loading state */
-        .loading-state {
-            display: none;
-            padding: 48px;
-        }
-
-        .skeleton {
-            background: linear-gradient(
-                90deg,
-                rgba(255,255,255,0.05) 0%,
-                rgba(255,255,255,0.1) 50%,
-                rgba(255,255,255,0.05) 100%
-            );
-            background-size: 200% 100%;
-            border-radius: 12px;
-            animation: shimmer 1.5s ease infinite;
-        }
-
-        @keyframes shimmer {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-
-        .skeleton-header { height: 32px; width: 60%; margin-bottom: 32px; }
-        .skeleton-line { height: 18px; margin-bottom: 16px; }
-        .skeleton-line:nth-child(3) { width: 90%; }
-        .skeleton-line:nth-child(4) { width: 75%; }
-        .skeleton-line:nth-child(5) { width: 85%; }
-        .skeleton-line:nth-child(6) { width: 60%; }
-
-        /* Response section */
-        .response-section {
-            display: none;
-            animation: fadeSlideUp 0.6s ease;
-        }
-
-        .response-section.visible {
-            display: block;
-        }
-
-        @keyframes fadeSlideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Meta stats */
-        .meta-stats {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 28px;
-        }
-
-        .stat-chip {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 16px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 100px;
-            font-size: 13px;
-            font-weight: 500;
-        }
-
-        .stat-chip.ready {
-            background: rgba(16, 185, 129, 0.15);
-            color: var(--success);
-        }
-
-        .stat-chip.review {
-            background: rgba(245, 158, 11, 0.15);
-            color: var(--warning);
-        }
-
-        .stat-icon {
-            font-size: 15px;
-        }
-
-        /* Categories */
-        .categories-section {
-            margin-bottom: 28px;
-        }
-
-        .section-label {
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-muted);
-            margin-bottom: 14px;
-        }
-
-        .categories {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .category-tag {
-            padding: 8px 16px;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(118, 75, 162, 0.15));
-            border: 1px solid rgba(99, 102, 241, 0.3);
-            border-radius: 100px;
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-primary);
-        }
-
-        /* Draft card */
-        .draft-card {
-            border-radius: 20px;
-            overflow: hidden;
-            margin-bottom: 28px;
-        }
-
-        .draft-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 18px 24px;
-            background: rgba(255, 255, 255, 0.03);
-            border-bottom: 1px solid var(--glass-border);
-        }
-
-        .draft-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-secondary);
-        }
-
-        .draft-title-icon {
-            font-size: 16px;
-        }
-
-        .btn-copy {
-            padding: 10px 18px;
-            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-family: inherit;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-copy:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 16px var(--accent-glow);
-        }
-
-        .draft-body {
-            padding: 28px;
-            font-size: 15px;
-            line-height: 1.9;
-            color: var(--text-primary);
-            white-space: pre-wrap;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .draft-body::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .draft-body::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .draft-body::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
-        }
-
-        /* Feedback */
-        .feedback-bar {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            padding: 20px 24px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 16px;
-        }
-
-        .feedback-label {
-            font-size: 14px;
-            color: var(--text-secondary);
-        }
-
-        .feedback-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn-feedback {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 20px;
-            border-radius: 12px;
-            font-family: inherit;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn-good {
-            background: rgba(16, 185, 129, 0.15);
-            color: var(--success);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-        }
-
-        .btn-good:hover {
-            background: rgba(16, 185, 129, 0.25);
-            transform: scale(1.05);
-        }
-
-        .btn-bad {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--danger);
-            border: 1px solid rgba(239, 68, 68, 0.2);
-        }
-
-        .btn-bad:hover {
-            background: rgba(239, 68, 68, 0.2);
-            transform: scale(1.05);
-        }
-
-        /* Inbox section */
-        .inbox-section {
+        /* Inbox */
+        .inbox {
             margin-bottom: 32px;
+            padding: 24px;
         }
 
         .inbox-header {
@@ -748,60 +174,54 @@
         .inbox-title {
             display: flex;
             align-items: center;
-            gap: 12px;
-            font-size: 18px;
+            gap: 8px;
+            font-size: 13px;
             font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
         }
 
-        .inbox-icon {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(251, 191, 36, 0.2));
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-        }
-
-        .inbox-badge {
-            background: var(--warning);
-            color: #000;
+        .inbox-count {
+            background: var(--accent);
+            color: white;
             font-size: 11px;
-            font-weight: 700;
-            padding: 4px 10px;
-            border-radius: 100px;
-            margin-left: 8px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 10px;
         }
 
         .btn-refresh {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 10px 16px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            color: var(--text-secondary);
+            gap: 6px;
+            padding: 8px 14px;
+            background: transparent;
+            border: none;
+            border-radius: var(--radius-md);
             font-family: inherit;
             font-size: 13px;
+            color: var(--accent);
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: background var(--transition);
         }
 
         .btn-refresh:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text-primary);
+            background: var(--accent-bg);
         }
 
-        .btn-refresh.loading .refresh-icon {
+        .btn-refresh.loading svg {
             animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         .inbox-list {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 2px;
         }
 
         .inbox-item {
@@ -809,466 +229,698 @@
             grid-template-columns: 1fr auto;
             gap: 16px;
             align-items: center;
-            padding: 16px 20px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 14px;
+            padding: 14px 16px;
+            border-radius: var(--radius-md);
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: background var(--transition);
         }
 
         .inbox-item:hover {
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 255, 255, 0.12);
-            transform: translateX(4px);
+            background: var(--bg);
         }
 
         .inbox-item.selected {
-            background: var(--accent-soft);
-            border-color: var(--accent-primary);
+            background: var(--accent-bg);
         }
 
         .inbox-content {
-            overflow: hidden;
+            min-width: 0;
         }
 
         .inbox-subject {
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 500;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 4px;
+        }
+
+        .inbox-preview {
+            font-size: 13px;
+            color: var(--text-secondary);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             margin-bottom: 6px;
         }
 
-        .inbox-preview {
-            font-size: 13px;
-            color: var(--text-muted);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            margin-bottom: 8px;
-        }
-
         .inbox-meta {
             display: flex;
-            gap: 12px;
-            font-size: 11px;
-            color: var(--text-muted);
-        }
-
-        .inbox-meta-item {
-            display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 12px;
+            font-size: 12px;
+            color: var(--text-tertiary);
         }
 
         .inbox-status {
-            padding: 3px 8px;
+            font-size: 11px;
+            font-weight: 500;
+            padding: 2px 8px;
             border-radius: 6px;
-            font-size: 10px;
-            font-weight: 600;
             text-transform: uppercase;
         }
 
         .inbox-status.open {
-            background: rgba(16, 185, 129, 0.15);
+            background: var(--success-bg);
             color: var(--success);
         }
 
         .inbox-status.waiting {
-            background: rgba(245, 158, 11, 0.15);
+            background: var(--warning-bg);
             color: var(--warning);
         }
 
         .inbox-status.closed {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text-muted);
+            background: var(--bg);
+            color: var(--text-tertiary);
         }
 
-        .inbox-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .btn-quick-draft {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 10px 14px;
-            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
-            border: none;
-            border-radius: 10px;
+        .btn-draft {
+            padding: 8px 16px;
+            background: var(--accent);
             color: white;
+            border: none;
+            border-radius: var(--radius-sm);
             font-family: inherit;
-            font-size: 12px;
-            font-weight: 600;
+            font-size: 13px;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all var(--transition);
             white-space: nowrap;
         }
 
-        .btn-quick-draft:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 16px var(--accent-glow);
-        }
-
-        .btn-quick-draft:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
+        .btn-draft:hover {
+            background: var(--accent-hover);
+            transform: scale(1.02);
         }
 
         .inbox-empty {
             text-align: center;
             padding: 40px 20px;
-            color: var(--text-muted);
+            color: var(--text-tertiary);
             font-size: 14px;
         }
 
-        .inbox-loading {
+        /* Workspace */
+        .workspace {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        @media (max-width: 960px) {
+            .workspace {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Form Panel */
+        .form-panel {
+            padding: 28px;
+            position: sticky;
+            top: 76px;
+        }
+
+        .panel-title {
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .form-label span {
+            font-weight: 400;
+            color: var(--text-tertiary);
+        }
+
+        .input, .textarea {
+            width: 100%;
+            padding: 12px 14px;
+            background: var(--bg);
+            border: 1px solid transparent;
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: 15px;
+            color: var(--text-primary);
+            transition: all var(--transition);
+        }
+
+        .input::placeholder, .textarea::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        .input:hover, .textarea:hover {
+            border-color: var(--border-strong);
+        }
+
+        .input:focus, .textarea:focus {
+            outline: none;
+            background: var(--surface);
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-bg);
+        }
+
+        .textarea {
+            min-height: 140px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        .form-actions {
             display: flex;
+            gap: 10px;
+            margin-top: 28px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
             justify-content: center;
+            gap: 8px;
+            padding: 14px 24px;
+            border: none;
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+
+        .btn-primary {
+            flex: 1;
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: var(--accent-hover);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: var(--bg);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        /* Output Panel */
+        .output-panel {
+            padding: 32px;
+            min-height: 500px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 80px 40px;
+        }
+
+        .empty-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--bg);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .empty-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .empty-text {
+            font-size: 15px;
+            color: var(--text-secondary);
+            max-width: 280px;
+        }
+
+        /* Loading */
+        .loading-state {
+            display: none;
             padding: 40px;
         }
 
-        /* History section */
-        .history-section {
-            margin-top: 60px;
+        .loading-dots {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 32px;
+        }
+
+        .loading-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: bounce 1.4s ease-in-out infinite;
+        }
+
+        .loading-dot:nth-child(2) { animation-delay: 0.16s; }
+        .loading-dot:nth-child(3) { animation-delay: 0.32s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, var(--bg) 0%, var(--border) 50%, var(--bg) 100%);
+            background-size: 200% 100%;
+            border-radius: var(--radius-sm);
+            animation: shimmer 1.5s ease infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .skeleton-lg { height: 24px; width: 50%; margin-bottom: 24px; }
+        .skeleton-md { height: 16px; margin-bottom: 12px; }
+        .skeleton-md:nth-child(3) { width: 90%; }
+        .skeleton-md:nth-child(4) { width: 75%; }
+        .skeleton-md:nth-child(5) { width: 85%; }
+
+        /* Response */
+        .response-section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .response-section.visible {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .meta-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .meta-chip {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: var(--bg);
+            border-radius: 100px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .meta-chip.ready {
+            background: var(--success-bg);
+            color: var(--success);
+        }
+
+        .meta-chip.review {
+            background: var(--warning-bg);
+            color: var(--warning);
+        }
+
+        .section-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-tertiary);
+            margin-bottom: 12px;
+        }
+
+        .categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .category {
+            padding: 6px 14px;
+            background: var(--accent-bg);
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--accent);
+        }
+
+        /* Draft */
+        .draft-box {
+            background: var(--bg);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .draft-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .draft-title {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .btn-copy {
+            padding: 6px 14px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+
+        .btn-copy:hover {
+            background: var(--accent-hover);
+        }
+
+        .draft-body {
+            padding: 20px;
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--text-primary);
+            white-space: pre-wrap;
+            max-height: 360px;
+            overflow-y: auto;
+        }
+
+        /* Feedback */
+        .feedback-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .feedback-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .feedback-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-feedback {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 16px;
+            background: var(--bg);
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+
+        .btn-feedback.good {
+            color: var(--success);
+        }
+
+        .btn-feedback.good:hover {
+            background: var(--success-bg);
+        }
+
+        .btn-feedback.bad {
+            color: var(--danger);
+        }
+
+        .btn-feedback.bad:hover {
+            background: var(--danger-bg);
+        }
+
+        /* History */
+        .history {
+            margin-top: 32px;
+            padding: 24px;
         }
 
         .history-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .history-title {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 22px;
+            font-size: 13px;
             font-weight: 600;
-        }
-
-        .history-icon {
-            width: 36px;
-            height: 36px;
-            background: var(--accent-soft);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
         }
 
         .history-count {
-            font-size: 13px;
-            color: var(--text-muted);
+            font-size: 12px;
+            color: var(--text-tertiary);
         }
 
         .history-list {
-            display: grid;
-            gap: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
         }
 
         .history-item {
             display: grid;
             grid-template-columns: auto 1fr auto;
-            gap: 18px;
+            gap: 14px;
             align-items: center;
-            padding: 20px 24px;
+            padding: 14px 16px;
+            border-radius: var(--radius-md);
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: background var(--transition);
         }
 
         .history-item:hover {
-            background: rgba(255, 255, 255, 0.12);
-            transform: translateX(4px);
+            background: var(--bg);
         }
 
-        .history-status-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
+        .history-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 16px;
         }
 
-        .history-status-icon.success {
-            background: rgba(16, 185, 129, 0.15);
+        .history-icon.success {
+            background: var(--success-bg);
         }
 
-        .history-status-icon.warning {
-            background: rgba(245, 158, 11, 0.15);
+        .history-icon.warning {
+            background: var(--warning-bg);
         }
 
         .history-content {
-            overflow: hidden;
+            min-width: 0;
         }
 
         .history-question {
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 500;
+            color: var(--text-primary);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
         .history-meta {
             display: flex;
-            gap: 16px;
+            gap: 12px;
             font-size: 12px;
-            color: var(--text-muted);
+            color: var(--text-tertiary);
         }
 
         .history-arrow {
-            font-size: 20px;
-            color: var(--text-muted);
-            transition: all 0.3s ease;
+            color: var(--text-tertiary);
+            font-size: 18px;
+            transition: transform var(--transition);
         }
 
         .history-item:hover .history-arrow {
-            color: var(--accent-primary);
-            transform: translateX(4px);
+            transform: translateX(3px);
+            color: var(--accent);
         }
 
-        .empty-history {
+        .history-empty {
             text-align: center;
-            padding: 48px;
-            color: var(--text-muted);
+            padding: 40px;
+            color: var(--text-tertiary);
             font-size: 14px;
         }
 
-        /* Error banner */
+        /* Error */
         .error-banner {
             display: none;
-            padding: 16px 20px;
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            border-radius: 14px;
-            margin-bottom: 20px;
+            padding: 12px 16px;
+            background: var(--danger-bg);
+            border-radius: var(--radius-md);
+            margin-bottom: 16px;
             font-size: 14px;
             color: var(--danger);
         }
 
         .error-banner.visible {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+            display: block;
         }
 
-        /* Toast notifications */
+        /* Toast */
         .toasts {
             position: fixed;
-            bottom: 32px;
-            right: 32px;
-            z-index: 9999;
+            bottom: 24px;
+            right: 24px;
+            z-index: 1000;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 8px;
         }
 
         .toast {
             display: flex;
             align-items: center;
-            gap: 14px;
-            padding: 18px 24px;
-            border-radius: 16px;
+            gap: 10px;
+            padding: 14px 20px;
+            background: var(--text-primary);
+            color: white;
+            border-radius: var(--radius-md);
             font-size: 14px;
             font-weight: 500;
-            animation: toastSlide 0.4s ease;
+            box-shadow: var(--shadow-lg);
+            animation: toastIn 0.3s ease;
         }
 
-        .toast.success {
-            background: rgba(16, 185, 129, 0.2);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            color: var(--success);
-            backdrop-filter: blur(20px);
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateY(10px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
-        .toast.error {
-            background: rgba(239, 68, 68, 0.2);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            color: var(--danger);
-            backdrop-filter: blur(20px);
-        }
-
-        @keyframes toastSlide {
-            from {
-                opacity: 0;
-                transform: translateX(100%);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        /* Glow effects on focus */
-        .input-panel:has(.input:focus),
-        .input-panel:has(.textarea:focus) {
-            box-shadow: var(--glass-shadow), 0 0 60px rgba(99, 102, 241, 0.1);
-        }
-
-        /* Typing indicator */
-        .typing-indicator {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 20px 24px;
-        }
-
-        .typing-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--accent-primary);
-            border-radius: 50%;
-            animation: typing 1.4s ease-in-out infinite;
-        }
-
-        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
-        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-
-        @keyframes typing {
-            0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-            30% { transform: translateY(-8px); opacity: 1; }
-        }
-
-        /* Stats grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 16px;
-            margin-top: 32px;
-        }
-
-        .stat-card {
-            padding: 20px;
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 28px;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 6px;
-        }
-
-        .stat-label {
-            font-size: 12px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        /* Responsive padding */
+        /* Responsive */
         @media (max-width: 768px) {
-            .header {
-                padding: 14px 20px;
-            }
-
-            .main {
-                padding: 28px 20px 60px;
-            }
-
-            .workspace {
-                gap: 24px;
-            }
-
-            .glass {
-                padding: 24px;
-                border-radius: 20px;
-            }
-
-            .hero-title {
-                font-size: 28px;
-            }
-
-            .input-panel {
-                position: static;
-            }
+            .hero-title { font-size: 32px; }
+            .hero-subtitle { font-size: 16px; }
+            .main { padding: 32px 16px 60px; }
+            .form-panel, .output-panel, .inbox, .history { padding: 20px; }
         }
     </style>
 </head>
 <body>
-    <!-- Animated background -->
-    <div class="bg-orbs">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
-    </div>
-
-    <!-- Header -->
     <header class="header">
         <div class="header-inner">
-            <div class="brand">
-                <div class="brand-icon">&#x2728;</div>
-                <div class="brand-text">
-                    <span class="brand-name">MetaShip</span>
-                    <span class="brand-tag">Support AI</span>
-                </div>
+            <div class="logo">
+                <div class="logo-icon">M</div>
+                <span>MetaShip AI</span>
             </div>
-            <div class="status-badge" id="statusBadge">
+            <div class="status" id="status">
                 <div class="status-dot"></div>
-                <span id="statusText">Connecting...</span>
+                <span id="statusText">Connecting</span>
             </div>
         </div>
     </header>
 
-    <!-- Main content -->
     <main class="main">
         <div class="hero">
-            <h1 class="hero-title">AI Draft Generator</h1>
-            <p class="hero-subtitle">Intelligent response drafts powered by RAG and language models</p>
+            <h1 class="hero-title">Support AI</h1>
+            <p class="hero-subtitle">Generate intelligent draft responses</p>
         </div>
 
-        <!-- Inbox Section -->
-        <section class="inbox-section glass" style="padding: 28px;" id="inboxSection">
+        <!-- Inbox -->
+        <div class="card inbox" id="inboxSection">
             <div class="inbox-header">
-                <h3 class="inbox-title">
-                    <span class="inbox-icon">&#x1F4E5;</span>
-                    Inbox
-                    <span class="inbox-badge" id="inboxBadge">0</span>
-                </h3>
+                <div class="inbox-title">
+                    Recent Tickets
+                    <span class="inbox-count" id="inboxCount">0</span>
+                </div>
                 <button class="btn-refresh" id="refreshBtn" onclick="loadTickets()">
-                    <span class="refresh-icon">&#x1F504;</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M23 4v6h-6M1 20v-6h6"/>
+                        <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+                    </svg>
                     Refresh
                 </button>
             </div>
             <div class="inbox-list" id="inboxList">
-                <div class="inbox-loading">
-                    <div class="spinner"></div>
-                </div>
+                <div class="inbox-empty">Loading tickets...</div>
             </div>
-        </section>
+        </div>
 
+        <!-- Workspace -->
         <div class="workspace">
-            <!-- Input panel -->
-            <aside class="input-panel glass" style="padding: 32px;">
-                <div class="panel-header">
-                    <div class="panel-icon">&#x1F4DD;</div>
-                    <h2 class="panel-title">Customer Query</h2>
-                </div>
+            <div class="card form-panel">
+                <div class="panel-title">Customer Query</div>
 
                 <div class="error-banner" id="errorBanner">
-                    <span>&#x26A0;&#xFE0F;</span>
                     <span id="errorText"></span>
                 </div>
 
                 <form id="form">
                     <div class="form-group">
-                        <label class="form-label">
-                            Subject
-                            <span class="optional">(optional)</span>
-                        </label>
+                        <label class="form-label">Subject <span>(optional)</span></label>
                         <input type="text" class="input" id="subject" placeholder="e.g., API Error 500">
                     </div>
 
@@ -1278,97 +930,80 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">
-                            Client
-                            <span class="optional">(optional)</span>
-                        </label>
+                        <label class="form-label">Client <span>(optional)</span></label>
                         <input type="text" class="input" id="client" placeholder="Company name">
                     </div>
 
-                    <div class="actions">
+                    <div class="form-actions">
                         <button type="submit" class="btn btn-primary" id="submitBtn">
-                            <span id="submitText">Generate Draft</span>
+                            <span id="submitText">Generate</span>
                             <div class="spinner" id="spinner" style="display:none"></div>
                         </button>
-                        <button type="button" class="btn btn-ghost" id="clearBtn">Clear</button>
+                        <button type="button" class="btn btn-secondary" id="clearBtn">Clear</button>
                     </div>
                 </form>
-            </aside>
+            </div>
 
-            <!-- Output panel -->
-            <div class="output-panel glass" style="padding: 32px;">
-                <!-- Empty state -->
+            <div class="card output-panel">
+                <!-- Empty -->
                 <div class="empty-state" id="emptyState">
-                    <div class="empty-icon">&#x1F680;</div>
+                    <div class="empty-icon">✨</div>
                     <h3 class="empty-title">Ready to Generate</h3>
-                    <p class="empty-text">Enter a customer question and click Generate to create an AI-powered draft response using our knowledge base.</p>
+                    <p class="empty-text">Enter a question and click Generate to create an AI-powered draft response.</p>
                 </div>
 
-                <!-- Loading state -->
+                <!-- Loading -->
                 <div class="loading-state" id="loadingState">
-                    <div class="typing-indicator">
-                        <div class="typing-dot"></div>
-                        <div class="typing-dot"></div>
-                        <div class="typing-dot"></div>
+                    <div class="loading-dots">
+                        <div class="loading-dot"></div>
+                        <div class="loading-dot"></div>
+                        <div class="loading-dot"></div>
                     </div>
-                    <div class="skeleton skeleton-header"></div>
-                    <div class="skeleton skeleton-line"></div>
-                    <div class="skeleton skeleton-line"></div>
-                    <div class="skeleton skeleton-line"></div>
-                    <div class="skeleton skeleton-line"></div>
+                    <div class="skeleton skeleton-lg"></div>
+                    <div class="skeleton skeleton-md"></div>
+                    <div class="skeleton skeleton-md"></div>
+                    <div class="skeleton skeleton-md"></div>
+                    <div class="skeleton skeleton-md"></div>
                 </div>
 
-                <!-- Response section -->
+                <!-- Response -->
                 <div class="response-section" id="responseSection">
-                    <div class="meta-stats" id="metaStats"></div>
+                    <div class="meta-bar" id="metaBar"></div>
 
-                    <div class="categories-section">
-                        <div class="section-label">Classification</div>
-                        <div class="categories" id="categories"></div>
-                    </div>
+                    <div class="section-label">Classification</div>
+                    <div class="categories" id="categories"></div>
 
-                    <div class="draft-card glass">
+                    <div class="draft-box">
                         <div class="draft-header">
-                            <span class="draft-title">
-                                <span class="draft-title-icon">&#x270D;&#xFE0F;</span>
-                                Draft Response
-                            </span>
+                            <span class="draft-title">Draft Response</span>
                             <button class="btn-copy" id="copyBtn">Copy</button>
                         </div>
                         <div class="draft-body" id="draftBody"></div>
                     </div>
 
-                    <div class="feedback-bar">
+                    <div class="feedback-row">
                         <span class="feedback-label">Was this helpful?</span>
-                        <div class="feedback-buttons">
-                            <button class="btn-feedback btn-good" id="btnGood">
-                                <span>&#x1F44D;</span> Yes
-                            </button>
-                            <button class="btn-feedback btn-bad" id="btnBad">
-                                <span>&#x1F44E;</span> No
-                            </button>
+                        <div class="feedback-btns">
+                            <button class="btn-feedback good" id="btnGood">👍 Yes</button>
+                            <button class="btn-feedback bad" id="btnBad">👎 No</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- History section -->
-        <section class="history-section glass" style="padding: 32px; margin-top: 48px;" id="historySection">
+        <!-- History -->
+        <div class="card history" id="historySection">
             <div class="history-header">
-                <h3 class="history-title">
-                    <span class="history-icon">&#x1F4C2;</span>
-                    Recent Generations
-                </h3>
+                <span class="history-title">Recent Generations</span>
                 <span class="history-count" id="historyCount">0 items</span>
             </div>
             <div class="history-list" id="historyList">
-                <div class="empty-history">No history yet. Generate your first draft!</div>
+                <div class="history-empty">No history yet</div>
             </div>
-        </section>
+        </div>
     </main>
 
-    <!-- Toast container -->
     <div class="toasts" id="toasts"></div>
 
     <script>
@@ -1380,148 +1015,101 @@
 
         const $ = id => document.getElementById(id);
 
-        // Load tickets from API
+        // Toast
+        function toast(msg) {
+            const el = document.createElement('div');
+            el.className = 'toast';
+            el.textContent = msg;
+            $('toasts').appendChild(el);
+            setTimeout(() => {
+                el.style.animation = 'toastIn 0.2s ease reverse';
+                setTimeout(() => el.remove(), 200);
+            }, 3000);
+        }
+
+        // Health
+        async function checkHealth() {
+            const status = $('status');
+            try {
+                const res = await fetch(`${API}/health`);
+                if (res.ok) {
+                    status.classList.add('online');
+                    status.classList.remove('offline');
+                    $('statusText').textContent = 'Online';
+                } else throw new Error();
+            } catch {
+                status.classList.add('offline');
+                status.classList.remove('online');
+                $('statusText').textContent = 'Offline';
+            }
+        }
+
+        // Load tickets
         async function loadTickets() {
             const btn = $('refreshBtn');
             btn.classList.add('loading');
-
             try {
                 const res = await fetch(`${API}/tickets/recent?limit=5`);
-                if (!res.ok) throw new Error('Failed to load tickets');
-
+                if (!res.ok) throw new Error();
                 tickets = await res.json();
                 renderInbox();
-            } catch (err) {
-                $('inboxList').innerHTML = `
-                    <div class="inbox-empty">
-                        &#x26A0;&#xFE0F; Failed to load tickets. <a href="#" onclick="loadTickets(); return false;">Retry</a>
-                    </div>
-                `;
+            } catch {
+                $('inboxList').innerHTML = '<div class="inbox-empty">Failed to load tickets</div>';
             } finally {
                 btn.classList.remove('loading');
             }
         }
 
-        // Render inbox list
         function renderInbox() {
-            $('inboxBadge').textContent = tickets.length;
-
+            $('inboxCount').textContent = tickets.length;
             if (!tickets.length) {
                 $('inboxList').innerHTML = '<div class="inbox-empty">No tickets found</div>';
                 return;
             }
-
-            $('inboxList').innerHTML = tickets.map((ticket, i) => {
-                const date = new Date(ticket.created_at);
-                const timeAgo = formatTimeAgo(date);
-                const statusClass = ticket.status || 'open';
-
+            $('inboxList').innerHTML = tickets.map((t, i) => {
+                const time = formatTime(new Date(t.created_at));
                 return `
-                    <div class="inbox-item ${selectedTicket === i ? 'selected' : ''}"
-                         onclick="selectTicket(${i})" data-index="${i}">
+                    <div class="inbox-item ${selectedTicket === i ? 'selected' : ''}" onclick="selectTicket(${i})">
                         <div class="inbox-content">
-                            <div class="inbox-subject">${ticket.subject || 'No subject'}</div>
-                            <div class="inbox-preview">${ticket.first_message_preview || 'No message'}</div>
+                            <div class="inbox-subject">${t.subject || 'No subject'}</div>
+                            <div class="inbox-preview">${t.first_message_preview || 'No message'}</div>
                             <div class="inbox-meta">
-                                <span class="inbox-meta-item">
-                                    <span class="inbox-status ${statusClass}">${statusClass}</span>
-                                </span>
-                                ${ticket.client_name ? `<span class="inbox-meta-item">&#x1F464; ${ticket.client_name}</span>` : ''}
-                                <span class="inbox-meta-item">&#x1F4C5; ${timeAgo}</span>
-                                ${ticket.channel ? `<span class="inbox-meta-item">#${ticket.channel}</span>` : ''}
+                                <span class="inbox-status ${t.status || 'open'}">${t.status || 'open'}</span>
+                                ${t.client_name ? `<span>${t.client_name}</span>` : ''}
+                                <span>${time}</span>
                             </div>
                         </div>
-                        <div class="inbox-actions">
-                            <button class="btn-quick-draft" onclick="quickDraft(${i}, event)" title="Generate draft">
-                                &#x26A1; Draft
-                            </button>
-                        </div>
+                        <button class="btn-draft" onclick="quickDraft(${i}, event)">Draft</button>
                     </div>
                 `;
             }).join('');
         }
 
-        // Format time ago
-        function formatTimeAgo(date) {
-            const now = new Date();
-            const diff = Math.floor((now - date) / 1000);
-
-            if (diff < 60) return 'just now';
-            if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-            if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
-            if (diff < 604800) return `${Math.floor(diff / 86400)}d ago`;
-            return date.toLocaleDateString('ru');
+        function formatTime(date) {
+            const diff = Math.floor((Date.now() - date) / 1000);
+            if (diff < 60) return 'now';
+            if (diff < 3600) return `${Math.floor(diff / 60)}m`;
+            if (diff < 86400) return `${Math.floor(diff / 3600)}h`;
+            return `${Math.floor(diff / 86400)}d`;
         }
 
-        // Select ticket and fill form
-        function selectTicket(index) {
-            selectedTicket = index;
-            const ticket = tickets[index];
-
-            // Fill form
-            $('subject').value = ticket.subject || '';
-            $('question').value = ticket.first_message_preview || '';
-            $('client').value = ticket.client_name || '';
-
-            // Update visual selection
-            document.querySelectorAll('.inbox-item').forEach((el, i) => {
-                el.classList.toggle('selected', i === index);
-            });
-
-            // Scroll to form
+        function selectTicket(i) {
+            selectedTicket = i;
+            const t = tickets[i];
+            $('subject').value = t.subject || '';
+            $('question').value = t.first_message_preview || '';
+            $('client').value = t.client_name || '';
+            renderInbox();
             $('form').scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
-        // Quick draft - generate immediately
-        async function quickDraft(index, event) {
-            event.stopPropagation();
-            const ticket = tickets[index];
-
-            // Select the ticket visually
-            selectedTicket = index;
-            document.querySelectorAll('.inbox-item').forEach((el, i) => {
-                el.classList.toggle('selected', i === index);
-            });
-
-            // Fill form and submit
-            $('subject').value = ticket.subject || '';
-            $('question').value = ticket.first_message_preview || '';
-            $('client').value = ticket.client_name || '';
-
-            // Trigger form submit
+        function quickDraft(i, e) {
+            e.stopPropagation();
+            selectTicket(i);
             $('form').dispatchEvent(new Event('submit'));
         }
 
-        // Toast notification
-        function toast(msg, type = 'info') {
-            const el = document.createElement('div');
-            el.className = `toast ${type}`;
-            el.innerHTML = `<span>${type === 'success' ? '&#x2705;' : '&#x274C;'}</span> ${msg}`;
-            $('toasts').appendChild(el);
-            setTimeout(() => {
-                el.style.animation = 'toastSlide 0.3s ease reverse';
-                setTimeout(() => el.remove(), 300);
-            }, 4000);
-        }
-
-        // Health check
-        async function checkHealth() {
-            const badge = $('statusBadge');
-            try {
-                const res = await fetch(`${API}/health`);
-                if (res.ok) {
-                    badge.classList.add('online');
-                    badge.classList.remove('offline');
-                    $('statusText').textContent = 'Online';
-                } else throw new Error();
-            } catch {
-                badge.classList.add('offline');
-                badge.classList.remove('online');
-                $('statusText').textContent = 'Offline';
-            }
-        }
-
-        // Generate response
+        // Generate
         async function generate(data) {
             const res = await fetch(`${API}/generate`, {
                 method: 'POST',
@@ -1530,12 +1118,11 @@
             });
             if (!res.ok) {
                 const err = await res.json();
-                throw new Error(err.detail || 'Generation failed');
+                throw new Error(err.detail || 'Failed');
             }
             return res.json();
         }
 
-        // Show loading
         function showLoading() {
             $('emptyState').style.display = 'none';
             $('responseSection').classList.remove('visible');
@@ -1543,51 +1130,31 @@
             startTime = Date.now();
         }
 
-        // Display response
-        function showResponse(result) {
+        function showResponse(r) {
             $('loadingState').style.display = 'none';
             $('responseSection').classList.add('visible');
-
             const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
-            const confidence = Math.round(result.confidence * 100);
-
-            // Meta stats
-            $('metaStats').innerHTML = `
-                <div class="stat-chip ${result.needs_escalation ? 'review' : 'ready'}">
-                    <span class="stat-icon">${result.needs_escalation ? '&#x26A0;&#xFE0F;' : '&#x2705;'}</span>
-                    ${result.needs_escalation ? 'Needs Review' : 'Ready to Send'}
+            const conf = Math.round(r.confidence * 100);
+            $('metaBar').innerHTML = `
+                <div class="meta-chip ${r.needs_escalation ? 'review' : 'ready'}">
+                    ${r.needs_escalation ? '⚠️ Review' : '✓ Ready'}
                 </div>
-                <div class="stat-chip">
-                    <span class="stat-icon">&#x1F3AF;</span>
-                    ${confidence}% confidence
-                </div>
-                <div class="stat-chip">
-                    <span class="stat-icon">&#x1F4DA;</span>
-                    ${result.retrieved_docs_count} sources
-                </div>
-                <div class="stat-chip">
-                    <span class="stat-icon">&#x23F1;&#xFE0F;</span>
-                    ${elapsed}s
-                </div>
+                <div class="meta-chip">${conf}%</div>
+                <div class="meta-chip">${r.retrieved_docs_count} sources</div>
+                <div class="meta-chip">${elapsed}s</div>
             `;
-
-            // Categories
-            $('categories').innerHTML = result.categories
-                .map(c => `<span class="category-tag">${c}</span>`).join('');
-
-            // Draft
-            $('draftBody').textContent = result.draft_response;
+            $('categories').innerHTML = r.categories.map(c => `<span class="category">${c}</span>`).join('');
+            $('draftBody').textContent = r.draft_response;
         }
 
-        // History management
-        function addHistory(q, result) {
+        function addHistory(q, r) {
             history.unshift({
-                q: q.substring(0, 60),
-                categories: result.categories,
-                confidence: result.confidence,
-                escalation: result.needs_escalation,
+                q: q.substring(0, 50),
+                categories: r.categories,
+                confidence: r.confidence,
+                escalation: r.needs_escalation,
                 time: new Date().toLocaleTimeString('ru', { hour: '2-digit', minute: '2-digit' }),
-                result
+                result: r
             });
             history = history.slice(0, 10);
             renderHistory();
@@ -1595,108 +1162,98 @@
 
         function renderHistory() {
             $('historyCount').textContent = `${history.length} items`;
-
             if (!history.length) {
-                $('historyList').innerHTML = '<div class="empty-history">No history yet. Generate your first draft!</div>';
+                $('historyList').innerHTML = '<div class="history-empty">No history yet</div>';
                 return;
             }
-
-            $('historyList').innerHTML = history.map((item, i) => `
-                <div class="history-item glass" onclick="loadHistory(${i})">
-                    <div class="history-status-icon ${item.escalation ? 'warning' : 'success'}">
-                        ${item.escalation ? '&#x26A0;&#xFE0F;' : '&#x2705;'}
+            $('historyList').innerHTML = history.map((h, i) => `
+                <div class="history-item" onclick="loadHistory(${i})">
+                    <div class="history-icon ${h.escalation ? 'warning' : 'success'}">
+                        ${h.escalation ? '⚠️' : '✓'}
                     </div>
                     <div class="history-content">
-                        <div class="history-question">${item.q}...</div>
+                        <div class="history-question">${h.q}...</div>
                         <div class="history-meta">
-                            <span>${item.time}</span>
-                            <span>${Math.round(item.confidence * 100)}%</span>
-                            <span>${item.categories.slice(0, 2).join(', ')}</span>
+                            <span>${h.time}</span>
+                            <span>${Math.round(h.confidence * 100)}%</span>
                         </div>
                     </div>
-                    <div class="history-arrow">&#x2192;</div>
+                    <div class="history-arrow">→</div>
                 </div>
             `).join('');
         }
 
         window.loadHistory = function(i) {
-            const item = history[i];
-            if (item?.result) {
+            if (history[i]?.result) {
                 startTime = Date.now();
-                showResponse(item.result);
+                showResponse(history[i].result);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         };
 
-        // Form submission
+        // Form
         $('form').addEventListener('submit', async e => {
             e.preventDefault();
             const q = $('question').value.trim();
             if (!q) return;
-
             $('submitBtn').disabled = true;
             $('submitText').textContent = 'Generating...';
             $('spinner').style.display = 'block';
             $('errorBanner').classList.remove('visible');
             showLoading();
-
             try {
-                // Use ticket_id from selected ticket if available
                 const ticketId = selectedTicket !== null && tickets[selectedTicket]
                     ? String(tickets[selectedTicket].ticket_id)
                     : `web-${Date.now()}`;
-
                 const data = {
                     ticket_id: ticketId,
                     question: q,
                     subject: $('subject').value.trim() || null,
                     client_name: $('client').value.trim() || null,
-                    channel: selectedTicket !== null ? tickets[selectedTicket]?.channel || 'web' : 'web'
+                    channel: 'web'
                 };
-                const result = await generate(data);
-                showResponse(result);
-                addHistory(q, result);
-                toast('Draft generated successfully', 'success');
+                const r = await generate(data);
+                showResponse(r);
+                addHistory(q, r);
+                toast('Draft generated');
             } catch (err) {
                 $('loadingState').style.display = 'none';
                 $('emptyState').style.display = 'flex';
                 $('errorText').textContent = err.message;
                 $('errorBanner').classList.add('visible');
-                toast(err.message, 'error');
             } finally {
                 $('submitBtn').disabled = false;
-                $('submitText').textContent = 'Generate Draft';
+                $('submitText').textContent = 'Generate';
                 $('spinner').style.display = 'none';
             }
         });
 
-        // Clear form
         $('clearBtn').addEventListener('click', () => {
             $('form').reset();
+            selectedTicket = null;
+            renderInbox();
             $('emptyState').style.display = 'flex';
             $('loadingState').style.display = 'none';
             $('responseSection').classList.remove('visible');
             $('errorBanner').classList.remove('visible');
         });
 
-        // Copy to clipboard
         $('copyBtn').addEventListener('click', async () => {
             try {
                 await navigator.clipboard.writeText($('draftBody').textContent);
-                toast('Copied to clipboard', 'success');
+                toast('Copied');
             } catch {
-                toast('Copy failed', 'error');
+                toast('Copy failed');
             }
         });
 
-        // Feedback
-        $('btnGood').addEventListener('click', () => toast('Thanks for the feedback!', 'success'));
+        $('btnGood').addEventListener('click', () => toast('Thanks!'));
         $('btnBad').addEventListener('click', () => {
-            const reason = prompt('What could be improved?');
-            if (reason) toast('Feedback recorded', 'success');
+            const r = prompt('What could be improved?');
+            if (r) toast('Feedback recorded');
         });
 
-        // Initialize
+        // Init
         checkHealth();
         loadTickets();
         setInterval(checkHealth, 30000);
