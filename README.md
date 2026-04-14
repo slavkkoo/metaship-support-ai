@@ -40,7 +40,7 @@ AI-powered support automation system for MetaShip. Combines ticket ingestion fro
 ### 1. Clone & Install
 
 ```bash
-git clone https://github.com/your-username/metaship-support-ai.git
+git clone https://github.com/slavkkoo/metaship-support-ai.git
 cd metaship-support-ai
 
 # Node.js dependencies
