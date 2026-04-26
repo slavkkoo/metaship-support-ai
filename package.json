@@ -1,12 +1,12 @@
 {
-  "name": "omnidesk-ticket-ingestion",
+  "name": "metaship-product-dashboard",
   "version": "1.0.0",
-  "description": "Stage 1: Ingest support tickets from Omnidesk to Supabase",
-  "main": "ingest-tickets.js",
+  "description": "Product health dashboard for MetaShip support",
   "type": "module",
   "scripts": {
     "ingest": "node ingest-tickets.js",
-    "test": "node ingest-tickets.js --dry-run"
+    "generate": "node generate-dashboard-data.js",
+    "dashboard": "node generate-dashboard-data.js && python3 -m http.server 8080 -d dashboard"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.0",
@@ -15,12 +15,5 @@
   "engines": {
     "node": ">=18.0.0"
   },
-  "keywords": [
-    "omnidesk",
-    "supabase",
-    "ticket-ingestion",
-    "support-analytics"
-  ],
-  "author": "",
-  "license": "ISC"
+  "license": "MIT"
 }
