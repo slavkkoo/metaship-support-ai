@@ -1,89 +1,284 @@
 {
-  "generatedAt": "2026-04-24T10:00:00.000Z",
+  "generatedAt": "2026-04-26T11:55:09.578Z",
   "period": {
-    "start": "2026-04-14T00:00:00.000Z",
-    "end": "2026-04-20T23:59:59.999Z",
-    "weekNumber": 16,
+    "start": "2026-04-19T16:00:00.000Z",
+    "end": "2026-04-26T15:59:59.999Z",
+    "weekNumber": 17,
     "year": 2026
   },
   "kpi": {
     "totalTickets": {
-      "value": 247,
-      "trend": 12,
-      "trendLabel": "+12%"
+      "value": 75,
+      "trend": 0,
+      "trendLabel": "0%"
     },
     "avgCloseTime": {
-      "value": 12.4,
-      "trend": -2.1,
-      "trendLabel": "-2.1h"
+      "value": 0.1,
+      "trend": 0.1,
+      "trendLabel": "+0.1h"
     },
     "closeRate": {
-      "value": 94.3,
-      "trend": 1.2,
-      "trendLabel": "+1.2%"
+      "value": 93.3,
+      "trend": 93.3,
+      "trendLabel": "+93.3%"
     },
     "criticalIssues": {
-      "value": 3,
-      "items": ["Timeout/5xx", "Ошибка авторизации", "Ошибка создания заказа"]
+      "value": 2,
+      "items": [
+        "Ошибка создания заказа",
+        "Timeout/5xx"
+      ]
     }
   },
   "weeklyTrend": [
-    { "week": "W5", "date": "2026-01-27", "count": 58, "closed": 55 },
-    { "week": "W6", "date": "2026-02-03", "count": 65, "closed": 62 },
-    { "week": "W7", "date": "2026-02-10", "count": 72, "closed": 68 },
-    { "week": "W8", "date": "2026-02-17", "count": 68, "closed": 65 },
-    { "week": "W9", "date": "2026-02-24", "count": 75, "closed": 71 },
-    { "week": "W10", "date": "2026-03-03", "count": 82, "closed": 78 },
-    { "week": "W11", "date": "2026-03-10", "count": 78, "closed": 75 },
-    { "week": "W12", "date": "2026-03-17", "count": 85, "closed": 82 },
-    { "week": "W13", "date": "2026-03-24", "count": 92, "closed": 88 },
-    { "week": "W14", "date": "2026-03-31", "count": 88, "closed": 85 },
-    { "week": "W15", "date": "2026-04-07", "count": 220, "closed": 210 },
-    { "week": "W16", "date": "2026-04-14", "count": 247, "closed": 233 }
+    {
+      "week": "W6",
+      "date": "2026-02-01",
+      "count": 65,
+      "closed": 65
+    },
+    {
+      "week": "W7",
+      "date": "2026-02-08",
+      "count": 68,
+      "closed": 66
+    },
+    {
+      "week": "W8",
+      "date": "2026-02-15",
+      "count": 51,
+      "closed": 49
+    },
+    {
+      "week": "W9",
+      "date": "2026-02-22",
+      "count": 29,
+      "closed": 22
+    },
+    {
+      "week": "W10",
+      "date": "2026-03-01",
+      "count": 50,
+      "closed": 50
+    },
+    {
+      "week": "W11",
+      "date": "2026-03-08",
+      "count": 59,
+      "closed": 59
+    },
+    {
+      "week": "W12",
+      "date": "2026-03-15",
+      "count": 60,
+      "closed": 60
+    },
+    {
+      "week": "W13",
+      "date": "2026-03-22",
+      "count": 58,
+      "closed": 57
+    },
+    {
+      "week": "W14",
+      "date": "2026-03-29",
+      "count": 31,
+      "closed": 27
+    },
+    {
+      "week": "W15",
+      "date": "2026-04-05",
+      "count": 0,
+      "closed": 0
+    },
+    {
+      "week": "W16",
+      "date": "2026-04-12",
+      "count": 0,
+      "closed": 0
+    },
+    {
+      "week": "W17",
+      "date": "2026-04-19",
+      "count": 75,
+      "closed": 70
+    }
   ],
   "topIssues": [
-    { "name": "ПВЗ не найден", "count": 42, "severity": "high", "area": "Справочник ПВЗ" },
-    { "name": "Ошибка создания заказа", "count": 31, "severity": "critical", "area": "Order API" },
-    { "name": "Тариф недоступен", "count": 28, "severity": "high", "area": "Тарификация" },
-    { "name": "Статусы не обновляются", "count": 22, "severity": "high", "area": "Status Sync" },
-    { "name": "Webhook не работает", "count": 15, "severity": "medium", "area": "Webhooks" },
-    { "name": "Timeout/5xx", "count": 8, "severity": "critical", "area": "Infrastructure" },
-    { "name": "Этикетка/Накладная", "count": 7, "severity": "medium", "area": "Documents" },
-    { "name": "Ошибка валидации", "count": 5, "severity": "medium", "area": "Data Validation" }
+    {
+      "name": "Ошибка создания заказа",
+      "count": 5,
+      "severity": "critical",
+      "area": "Order API"
+    },
+    {
+      "name": "Timeout/5xx",
+      "count": 3,
+      "severity": "critical",
+      "area": "Infrastructure"
+    },
+    {
+      "name": "Webhook не работает",
+      "count": 1,
+      "severity": "medium",
+      "area": "Webhooks"
+    },
+    {
+      "name": "Некорректный интервал",
+      "count": 1,
+      "severity": "high",
+      "area": "API валидация"
+    },
+    {
+      "name": "Этикетка/Накладная",
+      "count": 1,
+      "severity": "medium",
+      "area": "Documents"
+    },
+    {
+      "name": "Тариф недоступен",
+      "count": 1,
+      "severity": "high",
+      "area": "Тарификация"
+    },
+    {
+      "name": "Ошибка валидации",
+      "count": 1,
+      "severity": "medium",
+      "area": "Data Validation"
+    }
   ],
   "topClients": [
-    { "name": "ВАЛТА", "tickets": 23, "open": 2, "mainIssue": "Ошибка создания заказа", "trend": 67 },
-    { "name": "Citilink", "tickets": 18, "open": 1, "mainIssue": "ПВЗ не найден", "trend": 0 },
-    { "name": "InSales", "tickets": 14, "open": 0, "mainIssue": "Webhook не работает", "trend": -12 },
-    { "name": "Tom Tailor", "tickets": 11, "open": 1, "mainIssue": "Статусы не обновляются", "trend": 22 },
-    { "name": "МайДент24", "tickets": 9, "open": 0, "mainIssue": "Тариф недоступен", "trend": 0 },
-    { "name": "КМА", "tickets": 8, "open": 1, "mainIssue": "ПВЗ не найден", "trend": -5 },
-    { "name": "Петрович", "tickets": 7, "open": 0, "mainIssue": "Этикетка/Накладная", "trend": 15 }
+    {
+      "name": "ИП Молчанов",
+      "tickets": 2,
+      "open": 0,
+      "mainIssue": null,
+      "trend": 100
+    },
+    {
+      "name": "Петрович",
+      "tickets": 2,
+      "open": 0,
+      "mainIssue": null,
+      "trend": 100
+    },
+    {
+      "name": "ИП Семенов Иван",
+      "tickets": 2,
+      "open": 0,
+      "mainIssue": null,
+      "trend": 100
+    },
+    {
+      "name": "Tom Tailor",
+      "tickets": 2,
+      "open": 1,
+      "mainIssue": "Ошибка создания заказа",
+      "trend": 100
+    },
+    {
+      "name": "InSales",
+      "tickets": 1,
+      "open": 0,
+      "mainIssue": null,
+      "trend": 100
+    },
+    {
+      "name": "ИП Ладная",
+      "tickets": 1,
+      "open": 1,
+      "mainIssue": "Ошибка создания заказа",
+      "trend": 100
+    },
+    {
+      "name": "ООО Помощь интернет магаз",
+      "tickets": 1,
+      "open": 0,
+      "mainIssue": null,
+      "trend": 100
+    },
+    {
+      "name": "ИП Ладная Лидия",
+      "tickets": 1,
+      "open": 1,
+      "mainIssue": "Timeout/5xx",
+      "trend": 100
+    },
+    {
+      "name": "ИП Алсултановой",
+      "tickets": 1,
+      "open": 0,
+      "mainIssue": null,
+      "trend": 100
+    }
   ],
   "deliveryServices": [
-    { "name": "СДЕК", "issues": 34, "topProblem": "ПВЗ не найден", "status": "critical" },
-    { "name": "Почта России", "issues": 28, "topProblem": "Статусы не обновляются", "status": "critical" },
-    { "name": "DPD", "issues": 12, "topProblem": "Тариф недоступен", "status": "warning" },
-    { "name": "Boxberry", "issues": 9, "topProblem": "Webhook не работает", "status": "stable" },
-    { "name": "Dalli", "issues": 7, "topProblem": "Ошибка создания заказа", "status": "stable" },
-    { "name": "5Post", "issues": 5, "topProblem": "ПВЗ не найден", "status": "stable" }
+    {
+      "name": "Dalli",
+      "issues": 4,
+      "topProblem": "Ошибка создания заказа",
+      "status": "stable"
+    },
+    {
+      "name": "Pony Express",
+      "issues": 2,
+      "topProblem": "Timeout/5xx",
+      "status": "stable"
+    },
+    {
+      "name": "Почта России",
+      "issues": 2,
+      "topProblem": "Ошибка создания заказа",
+      "status": "stable"
+    },
+    {
+      "name": "СДЕК",
+      "issues": 1,
+      "topProblem": "Некорректный интервал",
+      "status": "stable"
+    },
+    {
+      "name": "Яндекс",
+      "issues": 1,
+      "topProblem": null,
+      "status": "stable"
+    }
   ],
   "risks": [
-    { "level": "critical", "title": "Timeout/5xx", "description": "8 тикетов в области Infrastructure", "count": 8 },
-    { "level": "critical", "title": "Ошибка создания заказа", "description": "31 тикет в области Order API", "count": 31 },
-    { "level": "high", "title": "ПВЗ не найден", "description": "42 тикета — справочник устарел", "count": 42 },
-    { "level": "medium", "title": "Рост обращений: ВАЛТА", "description": "+67% vs прошлая неделя", "count": 23 }
+    {
+      "level": "critical",
+      "title": "Ошибка создания заказа",
+      "description": "5 тикетов в области Order API",
+      "count": 5
+    },
+    {
+      "level": "critical",
+      "title": "Timeout/5xx",
+      "description": "3 тикетов в области Infrastructure",
+      "count": 3
+    }
   ],
   "recommendations": [
-    { "priority": 1, "text": "ПВЗ справочник СДЕК устарел → обновить кеш (42 тикета)" },
-    { "priority": 1, "text": "Проверить инфраструктуру — 8 тикетов с 5xx ошибками" },
-    { "priority": 2, "text": "ВАЛТА: рост +67% → назначить account manager" },
-    { "priority": 3, "text": "Показывать причину недоступности тарифа в UI (28 тикетов)" }
+    {
+      "priority": 2,
+      "text": "Улучшить валидацию создания заказов (5 тикетов)"
+    },
+    {
+      "priority": 1,
+      "text": "Проверить инфраструктуру — 3 тикетов с 5xx ошибками"
+    }
   ],
   "channels": [
-    { "name": "email", "count": 156, "percentage": 63 },
-    { "name": "chat", "count": 62, "percentage": 25 },
-    { "name": "api", "count": 22, "percentage": 9 },
-    { "name": "phone", "count": 7, "percentage": 3 }
+    {
+      "name": "telegram",
+      "count": 43,
+      "percentage": 57
+    },
+    {
+      "name": "email",
+      "count": 32,
+      "percentage": 43
+    }
   ]
 }
