@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MetaShip Support Health</title>
+  <title>MetaShip Product Health</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <style>
     :root {
@@ -25,11 +25,7 @@
       --radius-sm: 8px;
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
@@ -40,42 +36,55 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 40px 24px;
-    }
+    .container { max-width: 1400px; margin: 0 auto; padding: 40px 24px; }
 
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 40px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      gap: 16px;
     }
 
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
+    .logo { display: flex; align-items: center; gap: 12px; }
 
     .logo-icon {
-      width: 40px;
-      height: 40px;
+      width: 40px; height: 40px;
       background: linear-gradient(135deg, var(--accent-blue), #5856d6);
       border-radius: var(--radius-md);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: 700;
-      font-size: 18px;
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-weight: 700; font-size: 18px;
     }
 
-    h1 {
-      font-size: 28px;
-      font-weight: 600;
-      letter-spacing: -0.5px;
+    h1 { font-size: 28px; font-weight: 600; letter-spacing: -0.5px; }
+
+    .header-controls { display: flex; align-items: center; gap: 16px; }
+
+    /* Period Toggle */
+    .period-toggle {
+      display: flex;
+      background: var(--bg-card);
+      border-radius: 100px;
+      padding: 4px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .period-toggle button {
+      padding: 8px 20px;
+      border: none;
+      background: transparent;
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .period-toggle button.active {
+      background: var(--accent-blue);
+      color: white;
     }
 
     .period-badge {
@@ -87,10 +96,7 @@
       box-shadow: var(--shadow-card);
     }
 
-    .period-badge strong {
-      color: var(--text-primary);
-      font-weight: 600;
-    }
+    .period-badge strong { color: var(--text-primary); font-weight: 600; }
 
     /* KPI Cards */
     .kpi-grid {
@@ -108,10 +114,7 @@
       transition: transform 0.2s, box-shadow 0.2s;
     }
 
-    .kpi-card:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-hover);
-    }
+    .kpi-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
 
     .kpi-label {
       font-size: 13px;
@@ -121,47 +124,20 @@
       margin-bottom: 8px;
     }
 
-    .kpi-value {
-      font-size: 42px;
-      font-weight: 700;
-      letter-spacing: -1px;
-      margin-bottom: 4px;
-    }
+    .kpi-value { font-size: 42px; font-weight: 700; letter-spacing: -1px; margin-bottom: 4px; }
 
     .kpi-trend {
-      font-size: 14px;
-      font-weight: 500;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 4px 10px;
-      border-radius: 100px;
+      font-size: 14px; font-weight: 500;
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 4px 10px; border-radius: 100px;
     }
 
-    .kpi-trend.up {
-      background: rgba(52, 199, 89, 0.12);
-      color: var(--accent-green);
-    }
+    .kpi-trend.up { background: rgba(52, 199, 89, 0.12); color: var(--accent-green); }
+    .kpi-trend.down { background: rgba(255, 59, 48, 0.12); color: var(--accent-red); }
+    .kpi-trend.neutral { background: rgba(134, 134, 139, 0.12); color: var(--text-secondary); }
 
-    .kpi-trend.down {
-      background: rgba(255, 59, 48, 0.12);
-      color: var(--accent-red);
-    }
-
-    .kpi-trend.neutral {
-      background: rgba(134, 134, 139, 0.12);
-      color: var(--text-secondary);
-    }
-
-    .kpi-card.critical .kpi-value {
-      color: var(--accent-red);
-    }
-
-    .kpi-card.critical .kpi-items {
-      font-size: 12px;
-      color: var(--text-secondary);
-      margin-top: 8px;
-    }
+    .kpi-card.critical .kpi-value { color: var(--accent-red); }
+    .kpi-card.critical .kpi-items { font-size: 12px; color: var(--text-secondary); margin-top: 8px; }
 
     /* Grid Layout */
     .dashboard-grid {
@@ -185,29 +161,13 @@
       margin-bottom: 20px;
     }
 
-    .card-title {
-      font-size: 17px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    .card-title { font-size: 17px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+    .card-subtitle { font-size: 13px; color: var(--text-secondary); }
 
-    .card-subtitle {
-      font-size: 13px;
-      color: var(--text-secondary);
-    }
-
-    /* Chart */
-    .chart-container {
-      position: relative;
-      height: 200px;
-    }
+    .chart-container { position: relative; height: 200px; }
 
     /* Issues List */
-    .issues-list {
-      list-style: none;
-    }
+    .issues-list { list-style: none; }
 
     .issue-item {
       display: flex;
@@ -217,54 +177,41 @@
       border-bottom: 1px solid var(--border-light);
     }
 
-    .issue-item:last-child {
-      border-bottom: none;
-    }
+    .issue-item:last-child { border-bottom: none; }
 
-    .issue-name {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 14px;
-    }
+    .issue-name { display: flex; align-items: center; gap: 10px; font-size: 14px; flex: 1; }
 
-    .issue-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-    }
-
+    .issue-dot { width: 8px; height: 8px; border-radius: 50%; }
     .issue-dot.critical { background: var(--accent-red); }
     .issue-dot.high { background: var(--accent-orange); }
     .issue-dot.medium { background: var(--accent-yellow); }
 
-    .issue-count {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text-secondary);
+    .issue-trend {
+      font-size: 12px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 8px;
     }
 
-    .issue-bar {
-      flex: 1;
-      max-width: 120px;
-      height: 6px;
-      background: var(--border-light);
-      border-radius: 3px;
-      margin: 0 16px;
-      overflow: hidden;
+    .issue-trend.up { background: rgba(255, 59, 48, 0.1); color: var(--accent-red); }
+    .issue-trend.down { background: rgba(52, 199, 89, 0.1); color: var(--accent-green); }
+
+    .issue-count { font-size: 14px; font-weight: 600; color: var(--text-secondary); min-width: 30px; text-align: right; }
+
+    /* Health Status */
+    .health-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 8px;
     }
 
-    .issue-bar-fill {
-      height: 100%;
-      border-radius: 3px;
-      background: var(--accent-blue);
-    }
+    .health-dot.healthy { background: var(--accent-green); }
+    .health-dot.warning { background: var(--accent-orange); }
+    .health-dot.critical { background: var(--accent-red); }
 
     /* Clients Table */
-    .clients-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
+    .clients-table { width: 100%; border-collapse: collapse; }
 
     .clients-table th {
       text-align: left;
@@ -283,18 +230,10 @@
       border-bottom: 1px solid var(--border-light);
     }
 
-    .clients-table tr:last-child td {
-      border-bottom: none;
-    }
+    .clients-table tr:last-child td { border-bottom: none; }
 
-    .client-name {
-      font-weight: 500;
-    }
-
-    .client-issue {
-      color: var(--text-secondary);
-      font-size: 13px;
-    }
+    .client-name { font-weight: 500; display: flex; align-items: center; }
+    .client-issue { color: var(--text-secondary); font-size: 13px; }
 
     .trend-badge {
       font-size: 12px;
@@ -303,27 +242,55 @@
       border-radius: 100px;
     }
 
-    .trend-badge.up {
-      background: rgba(255, 59, 48, 0.1);
+    .trend-badge.up { background: rgba(255, 59, 48, 0.1); color: var(--accent-red); }
+    .trend-badge.down { background: rgba(52, 199, 89, 0.1); color: var(--accent-green); }
+    .trend-badge.neutral { background: rgba(134, 134, 139, 0.1); color: var(--text-secondary); }
+
+    /* At Risk Clients */
+    .at-risk-list { display: flex; flex-direction: column; gap: 12px; }
+
+    .at-risk-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      background: var(--bg-primary);
+      border-radius: var(--radius-md);
+      border-left: 4px solid var(--accent-red);
+    }
+
+    .at-risk-item.warning { border-left-color: var(--accent-orange); }
+
+    .at-risk-info { flex: 1; }
+    .at-risk-name { font-weight: 600; font-size: 14px; }
+    .at-risk-stats { font-size: 13px; color: var(--text-secondary); }
+    .at-risk-score {
+      font-size: 20px;
+      font-weight: 700;
       color: var(--accent-red);
     }
 
-    .trend-badge.down {
-      background: rgba(52, 199, 89, 0.1);
-      color: var(--accent-green);
+    .at-risk-item.warning .at-risk-score { color: var(--accent-orange); }
+
+    /* Product Areas */
+    .areas-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+    .area-card {
+      padding: 16px;
+      background: var(--bg-primary);
+      border-radius: var(--radius-md);
+      border-left: 4px solid var(--accent-blue);
     }
 
-    .trend-badge.neutral {
-      background: rgba(134, 134, 139, 0.1);
-      color: var(--text-secondary);
-    }
+    .area-card.critical { border-left-color: var(--accent-red); }
+    .area-card.high { border-left-color: var(--accent-orange); }
 
-    /* Delivery Services */
-    .ds-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-    }
+    .area-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+    .area-tickets { font-size: 24px; font-weight: 700; }
+    .area-issues { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+
+    /* DS Grid */
+    .ds-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
 
     .ds-card {
       padding: 16px;
@@ -332,49 +299,19 @@
       transition: background 0.2s;
     }
 
-    .ds-card:hover {
-      background: rgba(0,0,0,0.04);
-    }
+    .ds-card:hover { background: rgba(0,0,0,0.04); }
 
-    .ds-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-    }
-
-    .ds-name {
-      font-weight: 500;
-      font-size: 14px;
-    }
-
-    .ds-status {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-    }
-
+    .ds-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .ds-name { font-weight: 500; font-size: 14px; }
+    .ds-status { width: 8px; height: 8px; border-radius: 50%; }
     .ds-status.stable { background: var(--accent-green); }
     .ds-status.warning { background: var(--accent-orange); }
     .ds-status.critical { background: var(--accent-red); }
+    .ds-issues { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
+    .ds-problem { font-size: 12px; color: var(--text-secondary); }
 
-    .ds-issues {
-      font-size: 24px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .ds-problem {
-      font-size: 12px;
-      color: var(--text-secondary);
-    }
-
-    /* Risks & Recommendations */
-    .bottom-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
+    /* Bottom Grid */
+    .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 
     .risk-item {
       display: flex;
@@ -386,50 +323,23 @@
       margin-bottom: 10px;
     }
 
-    .risk-item:last-child {
-      margin-bottom: 0;
-    }
+    .risk-item:last-child { margin-bottom: 0; }
 
     .risk-icon {
-      width: 32px;
-      height: 32px;
+      width: 32px; height: 32px;
       border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; flex-shrink: 0;
     }
 
-    .risk-icon.critical {
-      background: rgba(255, 59, 48, 0.12);
-      color: var(--accent-red);
-    }
+    .risk-icon.critical { background: rgba(255, 59, 48, 0.12); color: var(--accent-red); }
+    .risk-icon.high { background: rgba(255, 149, 0, 0.12); color: var(--accent-orange); }
+    .risk-icon.warning { background: rgba(255, 149, 0, 0.12); color: var(--accent-orange); }
+    .risk-icon.medium { background: rgba(255, 204, 0, 0.12); color: var(--accent-orange); }
 
-    .risk-icon.high {
-      background: rgba(255, 149, 0, 0.12);
-      color: var(--accent-orange);
-    }
-
-    .risk-icon.medium {
-      background: rgba(255, 204, 0, 0.12);
-      color: var(--accent-orange);
-    }
-
-    .risk-content {
-      flex: 1;
-    }
-
-    .risk-title {
-      font-weight: 500;
-      font-size: 14px;
-      margin-bottom: 2px;
-    }
-
-    .risk-desc {
-      font-size: 13px;
-      color: var(--text-secondary);
-    }
+    .risk-content { flex: 1; }
+    .risk-title { font-weight: 500; font-size: 14px; margin-bottom: 2px; }
+    .risk-desc { font-size: 13px; color: var(--text-secondary); }
 
     .rec-item {
       display: flex;
@@ -440,30 +350,19 @@
       margin-bottom: 10px;
     }
 
-    .rec-item:last-child {
-      margin-bottom: 0;
-    }
+    .rec-item:last-child { margin-bottom: 0; }
 
     .rec-number {
-      width: 24px;
-      height: 24px;
+      width: 24px; height: 24px;
       background: var(--accent-blue);
       color: white;
       border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      font-weight: 600;
-      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 600; flex-shrink: 0;
     }
 
-    .rec-text {
-      font-size: 14px;
-      line-height: 1.5;
-    }
+    .rec-text { font-size: 14px; line-height: 1.5; }
 
-    /* Footer */
     footer {
       text-align: center;
       padding: 40px 0;
@@ -471,12 +370,8 @@
       font-size: 13px;
     }
 
-    footer a {
-      color: var(--accent-blue);
-      text-decoration: none;
-    }
+    footer a { color: var(--accent-blue); text-decoration: none; }
 
-    /* Loading State */
     .loading {
       display: flex;
       align-items: center;
@@ -487,32 +382,17 @@
 
     /* Responsive */
     @media (max-width: 1024px) {
-      .kpi-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      .dashboard-grid {
-        grid-template-columns: 1fr;
-      }
-      .bottom-grid {
-        grid-template-columns: 1fr;
-      }
+      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+      .dashboard-grid { grid-template-columns: 1fr; }
+      .bottom-grid { grid-template-columns: 1fr; }
+      .areas-grid { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 640px) {
-      .kpi-grid {
-        grid-template-columns: 1fr;
-      }
-      .container {
-        padding: 20px 16px;
-      }
-      header {
-        flex-direction: column;
-        gap: 16px;
-        text-align: center;
-      }
-      .ds-grid {
-        grid-template-columns: 1fr;
-      }
+      .kpi-grid { grid-template-columns: 1fr; }
+      .container { padding: 20px 16px; }
+      header { flex-direction: column; gap: 16px; text-align: center; }
+      .ds-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -521,15 +401,19 @@
     <header>
       <div class="logo">
         <div class="logo-icon">M</div>
-        <h1>Support Health</h1>
+        <h1>Product Health</h1>
       </div>
-      <div class="period-badge" id="period-badge">
-        Loading...
+      <div class="header-controls">
+        <div class="period-toggle">
+          <button id="btn-week" class="active" onclick="setPeriod('week')">Week</button>
+          <button id="btn-month" onclick="setPeriod('month')">Month</button>
+        </div>
+        <div class="period-badge" id="period-badge">Loading...</div>
       </div>
     </header>
 
     <!-- KPI Cards -->
-    <div class="kpi-grid" id="kpi-grid">
+    <div class="kpi-grid">
       <div class="kpi-card">
         <div class="kpi-label">Tickets</div>
         <div class="kpi-value" id="kpi-tickets">--</div>
@@ -546,15 +430,14 @@
         <span class="kpi-trend neutral" id="kpi-close-rate-trend">--</span>
       </div>
       <div class="kpi-card critical">
-        <div class="kpi-label">Critical Issues</div>
-        <div class="kpi-value" id="kpi-critical">--</div>
-        <div class="kpi-items" id="kpi-critical-items">--</div>
+        <div class="kpi-label">At Risk Clients</div>
+        <div class="kpi-value" id="kpi-at-risk">--</div>
+        <div class="kpi-items" id="kpi-at-risk-items">--</div>
       </div>
     </div>
 
-    <!-- Main Grid -->
+    <!-- Chart & At Risk Clients -->
     <div class="dashboard-grid">
-      <!-- Trend Chart -->
       <div class="card">
         <div class="card-header">
           <div class="card-title">Ticket Volume</div>
@@ -565,34 +448,55 @@
         </div>
       </div>
 
-      <!-- Top Issues -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">At Risk Clients</div>
+          <div class="card-subtitle">Need attention</div>
+        </div>
+        <div class="at-risk-list" id="at-risk-list">
+          <div class="loading">Loading...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Issues & Product Areas -->
+    <div class="dashboard-grid">
       <div class="card">
         <div class="card-header">
           <div class="card-title">Top Issues</div>
-          <div class="card-subtitle">This week</div>
+          <div class="card-subtitle" id="issues-subtitle">This week</div>
         </div>
         <ul class="issues-list" id="issues-list">
           <li class="loading">Loading...</li>
         </ul>
       </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Product Areas</div>
+          <div class="card-subtitle">By ticket volume</div>
+        </div>
+        <div class="areas-grid" id="areas-grid">
+          <div class="loading">Loading...</div>
+        </div>
+      </div>
     </div>
 
     <!-- Clients & DS -->
     <div class="dashboard-grid">
-      <!-- Top Clients -->
       <div class="card">
         <div class="card-header">
           <div class="card-title">Top Clients</div>
-          <div class="card-subtitle">By ticket volume</div>
+          <div class="card-subtitle" id="clients-subtitle">By ticket volume</div>
         </div>
         <table class="clients-table">
           <thead>
             <tr>
-              <th>#</th>
               <th>Client</th>
               <th>Tickets</th>
+              <th>Open</th>
               <th>Main Issue</th>
-              <th>Trend</th>
+              <th>Health</th>
             </tr>
           </thead>
           <tbody id="clients-tbody">
@@ -601,7 +505,6 @@
         </table>
       </div>
 
-      <!-- Delivery Services -->
       <div class="card">
         <div class="card-header">
           <div class="card-title">Delivery Services</div>
@@ -636,80 +539,111 @@
 
     <footer>
       Last updated: <span id="last-updated">--</span><br>
-      Auto-refresh: weekly via <a href="https://github.com" target="_blank">GitHub Actions</a>
+      Auto-refresh: weekly
     </footer>
   </div>
 
   <script>
     let trendChart = null;
+    let dashboardData = null;
+    let currentPeriod = 'week';
 
     async function loadDashboard() {
       try {
         const response = await fetch('data.json');
         if (!response.ok) throw new Error('Data not found');
-        const data = await response.json();
-        renderDashboard(data);
+        dashboardData = await response.json();
+        renderDashboard();
       } catch (error) {
         console.error('Error loading dashboard:', error);
         document.querySelector('.container').innerHTML = `
           <div style="text-align: center; padding: 100px 20px;">
             <h2>No data available</h2>
             <p style="color: var(--text-secondary); margin-top: 12px;">
-              Run <code>node generate-dashboard-data.js</code> to generate data.
+              Run <code>npm run generate</code> to generate data.
             </p>
           </div>
         `;
       }
     }
 
-    function renderDashboard(data) {
-      // Period
-      const periodDate = new Date(data.period.start);
-      const endDate = new Date(data.period.end);
-      document.getElementById('period-badge').innerHTML = `
-        <strong>Week ${data.period.weekNumber}</strong> &bull;
-        ${periodDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} -
-        ${endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-      `;
+    function setPeriod(period) {
+      currentPeriod = period;
+      document.getElementById('btn-week').classList.toggle('active', period === 'week');
+      document.getElementById('btn-month').classList.toggle('active', period === 'month');
+      renderDashboard();
+    }
+
+    function renderDashboard() {
+      const data = dashboardData;
+      const periodData = currentPeriod === 'week' ? data.week : data.month;
+
+      // Period badge
+      if (currentPeriod === 'week') {
+        const p = data.period.week;
+        const startDate = new Date(p.start);
+        const endDate = new Date(p.end);
+        document.getElementById('period-badge').innerHTML = `
+          <strong>Week ${p.weekNumber}</strong> &bull;
+          ${startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} -
+          ${endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+        `;
+      } else {
+        const p = data.period.month;
+        const startDate = new Date(p.start);
+        const endDate = new Date(p.end);
+        document.getElementById('period-badge').innerHTML = `
+          <strong>Last 4 weeks</strong> &bull;
+          ${startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} -
+          ${endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+        `;
+      }
 
       // KPIs
-      const kpi = data.kpi;
+      if (currentPeriod === 'week') {
+        const kpi = data.week.kpi;
+        document.getElementById('kpi-tickets').textContent = kpi.totalTickets.value;
+        const ticketsTrend = document.getElementById('kpi-tickets-trend');
+        ticketsTrend.textContent = kpi.totalTickets.trendLabel;
+        ticketsTrend.className = `kpi-trend ${kpi.totalTickets.trend > 0 ? 'up' : kpi.totalTickets.trend < 0 ? 'down' : 'neutral'}`;
 
-      document.getElementById('kpi-tickets').textContent = kpi.totalTickets.value;
-      const ticketsTrend = document.getElementById('kpi-tickets-trend');
-      ticketsTrend.textContent = kpi.totalTickets.trendLabel;
-      ticketsTrend.className = `kpi-trend ${kpi.totalTickets.trend > 0 ? 'up' : kpi.totalTickets.trend < 0 ? 'down' : 'neutral'}`;
+        document.getElementById('kpi-close-time').textContent = kpi.avgCloseTime.value + 'h';
+        const closeTimeTrend = document.getElementById('kpi-close-time-trend');
+        closeTimeTrend.textContent = kpi.avgCloseTime.trendLabel;
+        closeTimeTrend.className = `kpi-trend ${kpi.avgCloseTime.trend < 0 ? 'up' : kpi.avgCloseTime.trend > 0 ? 'down' : 'neutral'}`;
 
-      document.getElementById('kpi-close-time').textContent = kpi.avgCloseTime.value + 'h';
-      const closeTimeTrend = document.getElementById('kpi-close-time-trend');
-      closeTimeTrend.textContent = kpi.avgCloseTime.trendLabel;
-      closeTimeTrend.className = `kpi-trend ${kpi.avgCloseTime.trend < 0 ? 'up' : kpi.avgCloseTime.trend > 0 ? 'down' : 'neutral'}`;
+        document.getElementById('kpi-close-rate').textContent = kpi.closeRate.value + '%';
+        const closeRateTrend = document.getElementById('kpi-close-rate-trend');
+        closeRateTrend.textContent = kpi.closeRate.trendLabel;
+        closeRateTrend.className = `kpi-trend ${kpi.closeRate.trend > 0 ? 'up' : kpi.closeRate.trend < 0 ? 'down' : 'neutral'}`;
+      } else {
+        const kpi = data.month.kpi;
+        document.getElementById('kpi-tickets').textContent = kpi.totalTickets;
+        document.getElementById('kpi-tickets-trend').textContent = '';
+        document.getElementById('kpi-close-time').textContent = kpi.avgCloseTime + 'h';
+        document.getElementById('kpi-close-time-trend').textContent = '';
+        document.getElementById('kpi-close-rate').textContent = kpi.closeRate + '%';
+        document.getElementById('kpi-close-rate-trend').textContent = '';
+      }
 
-      document.getElementById('kpi-close-rate').textContent = kpi.closeRate.value + '%';
-      const closeRateTrend = document.getElementById('kpi-close-rate-trend');
-      closeRateTrend.textContent = kpi.closeRate.trendLabel;
-      closeRateTrend.className = `kpi-trend ${kpi.closeRate.trend > 0 ? 'up' : kpi.closeRate.trend < 0 ? 'down' : 'neutral'}`;
+      // At Risk KPI
+      const atRisk = data.atRiskClients || [];
+      document.getElementById('kpi-at-risk').textContent = atRisk.length;
+      document.getElementById('kpi-at-risk-items').textContent =
+        atRisk.length > 0 ? atRisk.slice(0, 2).map(c => c.name).join(', ') : 'All clients healthy';
 
-      document.getElementById('kpi-critical').textContent = kpi.criticalIssues.value;
-      document.getElementById('kpi-critical-items').textContent =
-        kpi.criticalIssues.items.length > 0 ? kpi.criticalIssues.items.join(', ') : 'No critical issues';
+      // Subtitles
+      document.getElementById('issues-subtitle').textContent = currentPeriod === 'week' ? 'This week' : 'Last 4 weeks';
+      document.getElementById('clients-subtitle').textContent = currentPeriod === 'week' ? 'This week' : 'Last 4 weeks';
 
-      // Trend Chart
+      // Render sections
       renderTrendChart(data.weeklyTrend);
-
-      // Top Issues
-      renderIssues(data.topIssues);
-
-      // Top Clients
-      renderClients(data.topClients);
-
-      // Delivery Services
-      renderDeliveryServices(data.deliveryServices);
-
-      // Risks
+      renderAtRiskClients(data.atRiskClients);
+      renderIssues(periodData.topIssues);
+      renderProductAreas(data.productAreas);
+      renderClients(periodData.topClients);
+      renderDeliveryServices(periodData.deliveryServices);
       renderRisks(data.risks);
-
-      // Recommendations
       renderRecommendations(data.recommendations);
 
       // Last updated
@@ -722,10 +656,7 @@
 
     function renderTrendChart(weeklyTrend) {
       const ctx = document.getElementById('trend-chart').getContext('2d');
-
-      if (trendChart) {
-        trendChart.destroy();
-      }
+      if (trendChart) trendChart.destroy();
 
       const gradient = ctx.createLinearGradient(0, 0, 0, 200);
       gradient.addColorStop(0, 'rgba(0, 113, 227, 0.2)');
@@ -753,10 +684,7 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          interaction: {
-            intersect: false,
-            mode: 'index'
-          },
+          interaction: { intersect: false, mode: 'index' },
           plugins: {
             legend: { display: false },
             tooltip: {
@@ -769,22 +697,10 @@
             }
           },
           scales: {
-            x: {
-              grid: { display: false },
-              ticks: {
-                color: '#86868b',
-                font: { size: 11 }
-              }
-            },
+            x: { grid: { display: false }, ticks: { color: '#86868b', font: { size: 11 } } },
             y: {
-              grid: {
-                color: 'rgba(0,0,0,0.04)',
-                drawBorder: false
-              },
-              ticks: {
-                color: '#86868b',
-                font: { size: 11 }
-              },
+              grid: { color: 'rgba(0,0,0,0.04)', drawBorder: false },
+              ticks: { color: '#86868b', font: { size: 11 } },
               beginAtZero: true
             }
           }
@@ -792,41 +708,91 @@
       });
     }
 
-    function renderIssues(issues) {
-      const maxCount = Math.max(...issues.map(i => i.count), 1);
-      const list = document.getElementById('issues-list');
+    function renderAtRiskClients(clients) {
+      const container = document.getElementById('at-risk-list');
+      if (!clients || clients.length === 0) {
+        container.innerHTML = '<div style="color: var(--accent-green); padding: 20px; text-align: center;">All clients healthy</div>';
+        return;
+      }
 
-      list.innerHTML = issues.map(issue => `
-        <li class="issue-item">
-          <span class="issue-name">
-            <span class="issue-dot ${issue.severity}"></span>
-            ${issue.name}
-          </span>
-          <div class="issue-bar">
-            <div class="issue-bar-fill" style="width: ${(issue.count / maxCount * 100)}%; background: ${
-              issue.severity === 'critical' ? 'var(--accent-red)' :
-              issue.severity === 'high' ? 'var(--accent-orange)' : 'var(--accent-blue)'
-            }"></div>
+      container.innerHTML = clients.slice(0, 4).map(client => `
+        <div class="at-risk-item ${client.healthStatus}">
+          <div class="at-risk-info">
+            <div class="at-risk-name">${client.name}</div>
+            <div class="at-risk-stats">${client.tickets} tickets, ${client.open} open</div>
           </div>
-          <span class="issue-count">${issue.count}</span>
-        </li>
+          <div class="at-risk-score">${client.healthScore}</div>
+        </div>
+      `).join('');
+    }
+
+    function renderIssues(issues) {
+      const list = document.getElementById('issues-list');
+      if (!issues || issues.length === 0) {
+        list.innerHTML = '<li style="padding: 20px; text-align: center; color: var(--text-secondary);">No issues</li>';
+        return;
+      }
+
+      const maxCount = Math.max(...issues.map(i => i.count), 1);
+
+      list.innerHTML = issues.slice(0, 8).map(issue => {
+        const trendHtml = issue.trend !== undefined && issue.trend !== 0
+          ? `<span class="issue-trend ${issue.trend > 0 ? 'up' : 'down'}">${issue.trend > 0 ? '+' : ''}${issue.trend}%</span>`
+          : '';
+
+        return `
+          <li class="issue-item">
+            <span class="issue-name">
+              <span class="issue-dot ${issue.severity}"></span>
+              ${issue.name}
+              ${trendHtml}
+            </span>
+            <span class="issue-count">${issue.count}</span>
+          </li>
+        `;
+      }).join('');
+    }
+
+    function renderProductAreas(areas) {
+      const grid = document.getElementById('areas-grid');
+      if (!areas || areas.length === 0) {
+        grid.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--text-secondary);">No data</div>';
+        return;
+      }
+
+      grid.innerHTML = areas.slice(0, 6).map(area => `
+        <div class="area-card ${area.severity}">
+          <div class="area-name">${area.name}</div>
+          <div class="area-tickets">${area.tickets}</div>
+          <div class="area-issues">${area.issues.slice(0, 2).map(i => i.name).join(', ')}</div>
+        </div>
       `).join('');
     }
 
     function renderClients(clients) {
       const tbody = document.getElementById('clients-tbody');
+      if (!clients || clients.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">No clients</td></tr>';
+        return;
+      }
 
-      tbody.innerHTML = clients.slice(0, 7).map((client, i) => `
+      tbody.innerHTML = clients.slice(0, 7).map(client => `
         <tr>
-          <td style="color: var(--text-tertiary)">${i + 1}</td>
           <td>
-            <div class="client-name">${client.name}</div>
+            <div class="client-name">
+              <span class="health-dot ${client.healthStatus || 'healthy'}"></span>
+              ${client.name}
+            </div>
           </td>
           <td><strong>${client.tickets}</strong></td>
+          <td>${client.open || 0}</td>
           <td class="client-issue">${client.mainIssue || '—'}</td>
           <td>
-            <span class="trend-badge ${client.trend > 0 ? 'up' : client.trend < 0 ? 'down' : 'neutral'}">
-              ${client.trend > 0 ? '+' : ''}${client.trend}%
+            <span class="trend-badge ${
+              client.healthStatus === 'critical' ? 'up' :
+              client.healthStatus === 'warning' ? 'neutral' : 'down'
+            }">
+              ${client.healthStatus || 'healthy'}
             </span>
           </td>
         </tr>
@@ -835,9 +801,8 @@
 
     function renderDeliveryServices(services) {
       const grid = document.getElementById('ds-grid');
-
-      if (services.length === 0) {
-        grid.innerHTML = '<div style="color: var(--text-secondary); padding: 20px; text-align: center;">No delivery service issues</div>';
+      if (!services || services.length === 0) {
+        grid.innerHTML = '<div style="color: var(--text-secondary); padding: 20px; text-align: center;">No issues</div>';
         return;
       }
 
@@ -848,24 +813,21 @@
             <span class="ds-status ${ds.status}"></span>
           </div>
           <div class="ds-issues">${ds.issues}</div>
-          <div class="ds-problem">${ds.topProblem || 'Various issues'}</div>
+          <div class="ds-problem">${ds.topProblem || 'Various'}</div>
         </div>
       `).join('');
     }
 
     function renderRisks(risks) {
       const container = document.getElementById('risks-list');
-
-      if (risks.length === 0) {
-        container.innerHTML = '<div style="color: var(--text-secondary); padding: 20px; text-align: center;">No significant risks</div>';
+      if (!risks || risks.length === 0) {
+        container.innerHTML = '<div style="color: var(--text-secondary); padding: 20px; text-align: center;">No risks</div>';
         return;
       }
 
       container.innerHTML = risks.map(risk => `
         <div class="risk-item">
-          <div class="risk-icon ${risk.level}">
-            ${risk.level === 'critical' ? '!' : risk.level === 'high' ? '!' : '!'}
-          </div>
+          <div class="risk-icon ${risk.level}">!</div>
           <div class="risk-content">
             <div class="risk-title">${risk.title}</div>
             <div class="risk-desc">${risk.description}</div>
@@ -876,8 +838,7 @@
 
     function renderRecommendations(recommendations) {
       const container = document.getElementById('recommendations-list');
-
-      if (recommendations.length === 0) {
+      if (!recommendations || recommendations.length === 0) {
         container.innerHTML = '<div style="color: var(--text-secondary); padding: 20px; text-align: center;">No recommendations</div>';
         return;
       }
@@ -890,7 +851,6 @@
       `).join('');
     }
 
-    // Load on page load
     loadDashboard();
   </script>
 </body>

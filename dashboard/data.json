@@ -1,35 +1,501 @@
 {
-  "generatedAt": "2026-04-26T11:55:09.578Z",
+  "generatedAt": "2026-04-26T12:08:22.766Z",
   "period": {
-    "start": "2026-04-19T16:00:00.000Z",
-    "end": "2026-04-26T15:59:59.999Z",
-    "weekNumber": 17,
-    "year": 2026
-  },
-  "kpi": {
-    "totalTickets": {
-      "value": 75,
-      "trend": 0,
-      "trendLabel": "0%"
+    "week": {
+      "start": "2026-04-19T16:00:00.000Z",
+      "end": "2026-04-26T15:59:59.999Z",
+      "weekNumber": 17,
+      "year": 2026
     },
-    "avgCloseTime": {
-      "value": 0.1,
-      "trend": 0.1,
-      "trendLabel": "+0.1h"
-    },
-    "closeRate": {
-      "value": 93.3,
-      "trend": 93.3,
-      "trendLabel": "+93.3%"
-    },
-    "criticalIssues": {
-      "value": 2,
-      "items": [
-        "Ошибка создания заказа",
-        "Timeout/5xx"
-      ]
+    "month": {
+      "start": "2026-03-28T16:00:00.000Z",
+      "end": "2026-04-26T15:59:59.999Z"
     }
   },
+  "week": {
+    "kpi": {
+      "totalTickets": {
+        "value": 75,
+        "trend": 0,
+        "trendLabel": "0%"
+      },
+      "avgCloseTime": {
+        "value": 0.1,
+        "trend": 0.1,
+        "trendLabel": "+0.1h"
+      },
+      "closeRate": {
+        "value": 93.3,
+        "trend": 93.3,
+        "trendLabel": "+93.3%"
+      },
+      "criticalIssues": {
+        "value": 2,
+        "items": [
+          "Ошибка создания заказа",
+          "Timeout/5xx"
+        ]
+      }
+    },
+    "topIssues": [
+      {
+        "name": "Ошибка создания заказа",
+        "count": 5,
+        "severity": "critical",
+        "area": "Order API",
+        "trend": 100,
+        "prevCount": 0
+      },
+      {
+        "name": "Timeout/5xx",
+        "count": 3,
+        "severity": "critical",
+        "area": "Infrastructure",
+        "trend": 100,
+        "prevCount": 0
+      },
+      {
+        "name": "Webhook не работает",
+        "count": 1,
+        "severity": "medium",
+        "area": "Webhooks",
+        "trend": 100,
+        "prevCount": 0
+      },
+      {
+        "name": "Некорректный интервал",
+        "count": 1,
+        "severity": "high",
+        "area": "API валидация",
+        "trend": 100,
+        "prevCount": 0
+      },
+      {
+        "name": "Этикетка/Накладная",
+        "count": 1,
+        "severity": "medium",
+        "area": "Documents",
+        "trend": 100,
+        "prevCount": 0
+      },
+      {
+        "name": "Тариф недоступен",
+        "count": 1,
+        "severity": "high",
+        "area": "Тарификация",
+        "trend": 100,
+        "prevCount": 0
+      },
+      {
+        "name": "Ошибка валидации",
+        "count": 1,
+        "severity": "medium",
+        "area": "Data Validation",
+        "trend": 100,
+        "prevCount": 0
+      }
+    ],
+    "topClients": [
+      {
+        "name": "ИП Молчанов",
+        "tickets": 2,
+        "open": 0,
+        "mainIssue": null,
+        "trend": 100,
+        "healthScore": 7,
+        "healthStatus": "healthy"
+      },
+      {
+        "name": "Петрович",
+        "tickets": 2,
+        "open": 0,
+        "mainIssue": null,
+        "trend": 100,
+        "healthScore": 7,
+        "healthStatus": "healthy"
+      },
+      {
+        "name": "ИП Семенов Иван",
+        "tickets": 2,
+        "open": 0,
+        "mainIssue": null,
+        "trend": 100,
+        "healthScore": 7,
+        "healthStatus": "healthy"
+      },
+      {
+        "name": "Tom Tailor",
+        "tickets": 2,
+        "open": 1,
+        "mainIssue": "Ошибка создания заказа",
+        "trend": 100,
+        "healthScore": 12,
+        "healthStatus": "warning"
+      },
+      {
+        "name": "InSales",
+        "tickets": 1,
+        "open": 0,
+        "mainIssue": null,
+        "trend": 100,
+        "healthScore": 5,
+        "healthStatus": "healthy"
+      },
+      {
+        "name": "ИП Ладная",
+        "tickets": 1,
+        "open": 1,
+        "mainIssue": "Ошибка создания заказа",
+        "trend": 100,
+        "healthScore": 10,
+        "healthStatus": "warning"
+      },
+      {
+        "name": "ООО Помощь интернет магаз",
+        "tickets": 1,
+        "open": 0,
+        "mainIssue": null,
+        "trend": 100,
+        "healthScore": 5,
+        "healthStatus": "healthy"
+      },
+      {
+        "name": "ИП Ладная Лидия",
+        "tickets": 1,
+        "open": 1,
+        "mainIssue": "Timeout/5xx",
+        "trend": 100,
+        "healthScore": 10,
+        "healthStatus": "warning"
+      },
+      {
+        "name": "ИП Алсултановой",
+        "tickets": 1,
+        "open": 0,
+        "mainIssue": null,
+        "trend": 100,
+        "healthScore": 5,
+        "healthStatus": "healthy"
+      }
+    ],
+    "deliveryServices": [
+      {
+        "name": "Dalli",
+        "issues": 4,
+        "topProblem": "Ошибка создания заказа",
+        "status": "stable"
+      },
+      {
+        "name": "Pony Express",
+        "issues": 2,
+        "topProblem": "Timeout/5xx",
+        "status": "stable"
+      },
+      {
+        "name": "Почта России",
+        "issues": 2,
+        "topProblem": "Ошибка создания заказа",
+        "status": "stable"
+      },
+      {
+        "name": "СДЕК",
+        "issues": 1,
+        "topProblem": "Некорректный интервал",
+        "status": "stable"
+      },
+      {
+        "name": "Яндекс",
+        "issues": 1,
+        "topProblem": null,
+        "status": "stable"
+      }
+    ]
+  },
+  "month": {
+    "kpi": {
+      "totalTickets": 106,
+      "closeRate": 91.5,
+      "avgCloseTime": 0.1
+    },
+    "topIssues": [
+      {
+        "name": "Ошибка создания заказа",
+        "count": 7,
+        "severity": "critical",
+        "area": "Order API"
+      },
+      {
+        "name": "Timeout/5xx",
+        "count": 4,
+        "severity": "critical",
+        "area": "Infrastructure"
+      },
+      {
+        "name": "Webhook не работает",
+        "count": 1,
+        "severity": "medium",
+        "area": "Webhooks"
+      },
+      {
+        "name": "Некорректный интервал",
+        "count": 1,
+        "severity": "high",
+        "area": "API валидация"
+      },
+      {
+        "name": "Этикетка/Накладная",
+        "count": 1,
+        "severity": "medium",
+        "area": "Documents"
+      },
+      {
+        "name": "Тариф недоступен",
+        "count": 1,
+        "severity": "high",
+        "area": "Тарификация"
+      },
+      {
+        "name": "Ошибка валидации",
+        "count": 1,
+        "severity": "medium",
+        "area": "Data Validation"
+      },
+      {
+        "name": "Ошибка авторизации",
+        "count": 1,
+        "severity": "critical",
+        "area": "Auth"
+      }
+    ],
+    "topClients": [
+      {
+        "name": "PIM.Агрегация",
+        "tickets": 9,
+        "open": 0,
+        "mainIssue": "Ошибка создания заказа",
+        "healthScore": 18,
+        "healthStatus": "healthy"
+      },
+      {
+        "name": "Олеся",
+        "tickets": 4,
+        "open": 0,
+        "mainIssue": null,
+        "healthScore": 8,
+        "healthStatus": "healthy"
+      },
+      {
+        "name": "ИП Молчанов",
+        "tickets": 2,
+        "open": 0,
+        "mainIssue": null,
+        "healthScore": 4,
+        "healthStatus": "healthy"
+      },
+      {
+        "name": "Петрович",
+        "tickets": 2,
+        "open": 0,
+        "mainIssue": null,
+        "healthScore": 4,
+        "healthStatus": "healthy"
+      },
+      {
+        "name": "ИП Семенов Иван",
+        "tickets": 2,
+        "open": 0,
+        "mainIssue": null,
+        "healthScore": 4,
+        "healthStatus": "healthy"
+      },
+      {
+        "name": "Tom Tailor",
+        "tickets": 2,
+        "open": 1,
+        "mainIssue": "Ошибка создания заказа",
+        "healthScore": 9,
+        "healthStatus": "healthy"
+      },
+      {
+        "name": "ИП Ладная Лидия",
+        "tickets": 2,
+        "open": 1,
+        "mainIssue": "Timeout/5xx",
+        "healthScore": 9,
+        "healthStatus": "healthy"
+      },
+      {
+        "name": "КМА",
+        "tickets": 2,
+        "open": 1,
+        "mainIssue": null,
+        "healthScore": 9,
+        "healthStatus": "healthy"
+      },
+      {
+        "name": "InSales",
+        "tickets": 1,
+        "open": 0,
+        "mainIssue": null,
+        "healthScore": 2,
+        "healthStatus": "healthy"
+      },
+      {
+        "name": "ИП Ладная",
+        "tickets": 1,
+        "open": 1,
+        "mainIssue": "Ошибка создания заказа",
+        "healthScore": 7,
+        "healthStatus": "healthy"
+      }
+    ],
+    "deliveryServices": [
+      {
+        "name": "Dalli",
+        "issues": 5,
+        "topProblem": "Ошибка создания заказа",
+        "status": "stable"
+      },
+      {
+        "name": "СДЕК",
+        "issues": 3,
+        "topProblem": "Некорректный интервал",
+        "status": "stable"
+      },
+      {
+        "name": "Почта России",
+        "issues": 3,
+        "topProblem": "Ошибка создания заказа",
+        "status": "stable"
+      },
+      {
+        "name": "5Post",
+        "issues": 3,
+        "topProblem": "Timeout/5xx",
+        "status": "stable"
+      },
+      {
+        "name": "Pony Express",
+        "issues": 2,
+        "topProblem": "Timeout/5xx",
+        "status": "stable"
+      },
+      {
+        "name": "Яндекс",
+        "issues": 1,
+        "topProblem": null,
+        "status": "stable"
+      }
+    ]
+  },
+  "productAreas": [
+    {
+      "name": "Order API",
+      "tickets": 5,
+      "issues": [
+        {
+          "name": "Ошибка создания заказа",
+          "count": 5
+        }
+      ],
+      "severity": "critical"
+    },
+    {
+      "name": "Infrastructure",
+      "tickets": 3,
+      "issues": [
+        {
+          "name": "Timeout/5xx",
+          "count": 3
+        }
+      ],
+      "severity": "critical"
+    },
+    {
+      "name": "Тарификация",
+      "tickets": 1,
+      "issues": [
+        {
+          "name": "Тариф недоступен",
+          "count": 1
+        }
+      ],
+      "severity": "high"
+    },
+    {
+      "name": "API валидация",
+      "tickets": 1,
+      "issues": [
+        {
+          "name": "Некорректный интервал",
+          "count": 1
+        }
+      ],
+      "severity": "high"
+    },
+    {
+      "name": "Webhooks",
+      "tickets": 1,
+      "issues": [
+        {
+          "name": "Webhook не работает",
+          "count": 1
+        }
+      ],
+      "severity": "low"
+    },
+    {
+      "name": "Documents",
+      "tickets": 1,
+      "issues": [
+        {
+          "name": "Этикетка/Накладная",
+          "count": 1
+        }
+      ],
+      "severity": "low"
+    },
+    {
+      "name": "Data Validation",
+      "tickets": 1,
+      "issues": [
+        {
+          "name": "Ошибка валидации",
+          "count": 1
+        }
+      ],
+      "severity": "low"
+    }
+  ],
+  "atRiskClients": [
+    {
+      "name": "Tom Tailor",
+      "tickets": 2,
+      "open": 1,
+      "mainIssue": "Ошибка создания заказа",
+      "trend": 100,
+      "healthScore": 12,
+      "healthStatus": "warning"
+    },
+    {
+      "name": "ИП Ладная",
+      "tickets": 1,
+      "open": 1,
+      "mainIssue": "Ошибка создания заказа",
+      "trend": 100,
+      "healthScore": 10,
+      "healthStatus": "warning"
+    },
+    {
+      "name": "ИП Ладная Лидия",
+      "tickets": 1,
+      "open": 1,
+      "mainIssue": "Timeout/5xx",
+      "trend": 100,
+      "healthScore": 10,
+      "healthStatus": "warning"
+    }
+  ],
   "weeklyTrend": [
     {
       "week": "W6",
@@ -104,48 +570,144 @@
       "closed": 70
     }
   ],
+  "risks": [
+    {
+      "level": "critical",
+      "title": "Ошибка создания заказа",
+      "description": "5 тикетов в области Order API",
+      "count": 5
+    },
+    {
+      "level": "critical",
+      "title": "Timeout/5xx",
+      "description": "3 тикетов в области Infrastructure",
+      "count": 3
+    },
+    {
+      "level": "warning",
+      "title": "Клиент: Tom Tailor",
+      "description": "2 тикетов, 1 открытых",
+      "count": 12
+    },
+    {
+      "level": "warning",
+      "title": "Клиент: ИП Ладная",
+      "description": "1 тикетов, 1 открытых",
+      "count": 10
+    },
+    {
+      "level": "warning",
+      "title": "Клиент: ИП Ладная Лидия",
+      "description": "1 тикетов, 1 открытых",
+      "count": 10
+    }
+  ],
+  "recommendations": [
+    {
+      "priority": 2,
+      "text": "Улучшить валидацию создания заказов (5 тикетов)"
+    },
+    {
+      "priority": 1,
+      "text": "Проверить инфраструктуру — 3 тикетов с 5xx ошибками"
+    },
+    {
+      "priority": 2,
+      "text": "Tom Tailor: 2 тикетов, 1 открытых → назначить account manager"
+    }
+  ],
+  "channels": [
+    {
+      "name": "telegram",
+      "count": 43,
+      "percentage": 57
+    },
+    {
+      "name": "email",
+      "count": 32,
+      "percentage": 43
+    }
+  ],
+  "kpi": {
+    "totalTickets": {
+      "value": 75,
+      "trend": 0,
+      "trendLabel": "0%"
+    },
+    "avgCloseTime": {
+      "value": 0.1,
+      "trend": 0.1,
+      "trendLabel": "+0.1h"
+    },
+    "closeRate": {
+      "value": 93.3,
+      "trend": 93.3,
+      "trendLabel": "+93.3%"
+    },
+    "criticalIssues": {
+      "value": 2,
+      "items": [
+        "Ошибка создания заказа",
+        "Timeout/5xx"
+      ]
+    }
+  },
   "topIssues": [
     {
       "name": "Ошибка создания заказа",
       "count": 5,
       "severity": "critical",
-      "area": "Order API"
+      "area": "Order API",
+      "trend": 100,
+      "prevCount": 0
     },
     {
       "name": "Timeout/5xx",
       "count": 3,
       "severity": "critical",
-      "area": "Infrastructure"
+      "area": "Infrastructure",
+      "trend": 100,
+      "prevCount": 0
     },
     {
       "name": "Webhook не работает",
       "count": 1,
       "severity": "medium",
-      "area": "Webhooks"
+      "area": "Webhooks",
+      "trend": 100,
+      "prevCount": 0
     },
     {
       "name": "Некорректный интервал",
       "count": 1,
       "severity": "high",
-      "area": "API валидация"
+      "area": "API валидация",
+      "trend": 100,
+      "prevCount": 0
     },
     {
       "name": "Этикетка/Накладная",
       "count": 1,
       "severity": "medium",
-      "area": "Documents"
+      "area": "Documents",
+      "trend": 100,
+      "prevCount": 0
     },
     {
       "name": "Тариф недоступен",
       "count": 1,
       "severity": "high",
-      "area": "Тарификация"
+      "area": "Тарификация",
+      "trend": 100,
+      "prevCount": 0
     },
     {
       "name": "Ошибка валидации",
       "count": 1,
       "severity": "medium",
-      "area": "Data Validation"
+      "area": "Data Validation",
+      "trend": 100,
+      "prevCount": 0
     }
   ],
   "topClients": [
@@ -154,63 +716,81 @@
       "tickets": 2,
       "open": 0,
       "mainIssue": null,
-      "trend": 100
+      "trend": 100,
+      "healthScore": 7,
+      "healthStatus": "healthy"
     },
     {
       "name": "Петрович",
       "tickets": 2,
       "open": 0,
       "mainIssue": null,
-      "trend": 100
+      "trend": 100,
+      "healthScore": 7,
+      "healthStatus": "healthy"
     },
     {
       "name": "ИП Семенов Иван",
       "tickets": 2,
       "open": 0,
       "mainIssue": null,
-      "trend": 100
+      "trend": 100,
+      "healthScore": 7,
+      "healthStatus": "healthy"
     },
     {
       "name": "Tom Tailor",
       "tickets": 2,
       "open": 1,
       "mainIssue": "Ошибка создания заказа",
-      "trend": 100
+      "trend": 100,
+      "healthScore": 12,
+      "healthStatus": "warning"
     },
     {
       "name": "InSales",
       "tickets": 1,
       "open": 0,
       "mainIssue": null,
-      "trend": 100
+      "trend": 100,
+      "healthScore": 5,
+      "healthStatus": "healthy"
     },
     {
       "name": "ИП Ладная",
       "tickets": 1,
       "open": 1,
       "mainIssue": "Ошибка создания заказа",
-      "trend": 100
+      "trend": 100,
+      "healthScore": 10,
+      "healthStatus": "warning"
     },
     {
       "name": "ООО Помощь интернет магаз",
       "tickets": 1,
       "open": 0,
       "mainIssue": null,
-      "trend": 100
+      "trend": 100,
+      "healthScore": 5,
+      "healthStatus": "healthy"
     },
     {
       "name": "ИП Ладная Лидия",
       "tickets": 1,
       "open": 1,
       "mainIssue": "Timeout/5xx",
-      "trend": 100
+      "trend": 100,
+      "healthScore": 10,
+      "healthStatus": "warning"
     },
     {
       "name": "ИП Алсултановой",
       "tickets": 1,
       "open": 0,
       "mainIssue": null,
-      "trend": 100
+      "trend": 100,
+      "healthScore": 5,
+      "healthStatus": "healthy"
     }
   ],
   "deliveryServices": [
@@ -243,42 +823,6 @@
       "issues": 1,
       "topProblem": null,
       "status": "stable"
-    }
-  ],
-  "risks": [
-    {
-      "level": "critical",
-      "title": "Ошибка создания заказа",
-      "description": "5 тикетов в области Order API",
-      "count": 5
-    },
-    {
-      "level": "critical",
-      "title": "Timeout/5xx",
-      "description": "3 тикетов в области Infrastructure",
-      "count": 3
-    }
-  ],
-  "recommendations": [
-    {
-      "priority": 2,
-      "text": "Улучшить валидацию создания заказов (5 тикетов)"
-    },
-    {
-      "priority": 1,
-      "text": "Проверить инфраструктуру — 3 тикетов с 5xx ошибками"
-    }
-  ],
-  "channels": [
-    {
-      "name": "telegram",
-      "count": 43,
-      "percentage": 57
-    },
-    {
-      "name": "email",
-      "count": 32,
-      "percentage": 43
     }
   ]
 }
