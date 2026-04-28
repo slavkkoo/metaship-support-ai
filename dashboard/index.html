@@ -584,7 +584,7 @@
         const startDate = new Date(p.start);
         const endDate = new Date(p.end);
         document.getElementById('period-badge').innerHTML = `
-          <strong>Week ${p.weekNumber}</strong> &bull;
+          <strong>Last 7 days</strong> &bull;
           ${startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} -
           ${endDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
         `;
@@ -643,8 +643,8 @@
       renderProductAreas(data.productAreas);
       renderClients(periodData.topClients);
       renderDeliveryServices(periodData.deliveryServices);
-      renderRisks(data.risks);
-      renderRecommendations(data.recommendations);
+      renderRisks(periodData.risks || data.risks);
+      renderRecommendations(periodData.recommendations || data.recommendations);
 
       // Last updated
       document.getElementById('last-updated').textContent =

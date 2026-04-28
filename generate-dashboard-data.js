@@ -121,22 +121,19 @@ function extractDS(text) {
 }
 
 function getWeekRange(weeksAgo = 0) {
-  const now = new Date();
-  const dayOfWeek = now.getDay();
-  const diffToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+  // Last 7 days (rolling window, not calendar week)
+  const end = new Date();
+  end.setHours(23, 59, 59, 999);
 
-  const thisMonday = new Date(now);
-  thisMonday.setDate(now.getDate() - diffToMonday);
-  thisMonday.setHours(0, 0, 0, 0);
+  const start = new Date();
+  start.setDate(start.getDate() - 7 * (weeksAgo + 1) + 1);
+  start.setHours(0, 0, 0, 0);
 
-  const targetMonday = new Date(thisMonday);
-  targetMonday.setDate(thisMonday.getDate() - 7 * weeksAgo);
+  const actualEnd = new Date();
+  actualEnd.setDate(actualEnd.getDate() - 7 * weeksAgo);
+  actualEnd.setHours(23, 59, 59, 999);
 
-  const targetSunday = new Date(targetMonday);
-  targetSunday.setDate(targetMonday.getDate() + 6);
-  targetSunday.setHours(23, 59, 59, 999);
-
-  return { start: targetMonday, end: targetSunday };
+  return { start, end: weeksAgo === 0 ? end : actualEnd };
 }
 
 function getWeekNumber(date) {
@@ -574,14 +571,14 @@ async function generateDashboardData() {
       };
     });
 
-  // === RISKS ===
-  const risks = [];
+  // === RISKS (based on weekly data) ===
+  const weeklyRisks = [];
 
   // Critical errors
   const criticalErrors = Object.entries(errorStats)
     .filter(([_, data]) => data.severity === 'critical' && data.count >= 2);
   for (const [name, data] of criticalErrors) {
-    risks.push({
+    weeklyRisks.push({
       level: 'critical',
       title: name,
       description: `${data.count} тикетов в области ${data.area}`,
@@ -591,9 +588,9 @@ async function generateDashboardData() {
 
   // High severity errors
   const highErrors = Object.entries(errorStats)
-    .filter(([_, data]) => data.severity === 'high' && data.count >= 5);
+    .filter(([_, data]) => data.severity === 'high' && data.count >= 3);
   for (const [name, data] of highErrors) {
-    risks.push({
+    weeklyRisks.push({
       level: 'high',
       title: name,
       description: `${data.count} тикетов`,
@@ -603,7 +600,7 @@ async function generateDashboardData() {
 
   // At-risk clients
   for (const client of atRiskClients.slice(0, 3)) {
-    risks.push({
+    weeklyRisks.push({
       level: client.healthStatus,
       title: `Клиент: ${client.name}`,
       description: `${client.tickets} тикетов, ${client.open} открытых`,
@@ -611,41 +608,125 @@ async function generateDashboardData() {
     });
   }
 
-  // === RECOMMENDATIONS ===
-  const recommendations = [];
+  // === WEEKLY RECOMMENDATIONS ===
+  const weeklyRecommendations = [];
 
-  if (errorStats['ПВЗ не найден']?.count >= 3) {
-    recommendations.push({
+  if (errorStats['ПВЗ не найден']?.count >= 2) {
+    weeklyRecommendations.push({
       priority: 1,
       text: `ПВЗ справочник устарел → обновить кеш (${errorStats['ПВЗ не найден'].count} тикетов)`
     });
   }
 
-  if (errorStats['Ошибка создания заказа']?.count >= 3) {
-    recommendations.push({
+  if (errorStats['Ошибка создания заказа']?.count >= 2) {
+    weeklyRecommendations.push({
       priority: 2,
       text: `Улучшить валидацию создания заказов (${errorStats['Ошибка создания заказа'].count} тикетов)`
     });
   }
 
-  if (errorStats['Timeout/5xx']?.count >= 2) {
-    recommendations.push({
+  if (errorStats['Timeout/5xx']?.count >= 1) {
+    weeklyRecommendations.push({
       priority: 1,
       text: `Проверить инфраструктуру — ${errorStats['Timeout/5xx'].count} тикетов с 5xx ошибками`
     });
   }
 
   if (atRiskClients.length > 0) {
-    recommendations.push({
+    weeklyRecommendations.push({
       priority: 2,
       text: `${atRiskClients[0].name}: ${atRiskClients[0].tickets} тикетов, ${atRiskClients[0].open} открытых → назначить account manager`
     });
   }
 
-  if (errorStats['Тариф недоступен']?.count >= 3) {
-    recommendations.push({
+  if (errorStats['Тариф недоступен']?.count >= 2) {
+    weeklyRecommendations.push({
       priority: 3,
       text: `Показывать причину недоступности тарифа в UI (${errorStats['Тариф недоступен'].count} тикетов)`
+    });
+  }
+
+  // === MONTHLY RISKS ===
+  const monthlyRisks = [];
+  const monthErrorStats = monthAnalysis.errorStats;
+
+  const monthlyCriticalErrors = Object.entries(monthErrorStats)
+    .filter(([_, data]) => data.severity === 'critical' && data.count >= 5);
+  for (const [name, data] of monthlyCriticalErrors) {
+    monthlyRisks.push({
+      level: 'critical',
+      title: name,
+      description: `${data.count} тикетов в области ${data.area}`,
+      count: data.count
+    });
+  }
+
+  const monthlyHighErrors = Object.entries(monthErrorStats)
+    .filter(([_, data]) => data.severity === 'high' && data.count >= 5);
+  for (const [name, data] of monthlyHighErrors) {
+    monthlyRisks.push({
+      level: 'high',
+      title: name,
+      description: `${data.count} тикетов`,
+      count: data.count
+    });
+  }
+
+  // Monthly at-risk clients
+  const monthlyAtRiskClients = monthlyTopClients
+    .filter(c => c.healthStatus === 'critical' || c.healthStatus === 'warning')
+    .slice(0, 3);
+  for (const client of monthlyAtRiskClients) {
+    monthlyRisks.push({
+      level: client.healthStatus,
+      title: `Клиент: ${client.name}`,
+      description: `${client.tickets} тикетов, ${client.open} открытых`,
+      count: client.healthScore
+    });
+  }
+
+  // === MONTHLY RECOMMENDATIONS ===
+  const monthlyRecommendations = [];
+
+  if (monthErrorStats['ПВЗ не найден']?.count >= 5) {
+    monthlyRecommendations.push({
+      priority: 1,
+      text: `ПВЗ справочник устарел → обновить кеш (${monthErrorStats['ПВЗ не найден'].count} тикетов за месяц)`
+    });
+  }
+
+  if (monthErrorStats['Ошибка создания заказа']?.count >= 5) {
+    monthlyRecommendations.push({
+      priority: 2,
+      text: `Улучшить валидацию создания заказов (${monthErrorStats['Ошибка создания заказа'].count} тикетов)`
+    });
+  }
+
+  if (monthErrorStats['Timeout/5xx']?.count >= 3) {
+    monthlyRecommendations.push({
+      priority: 1,
+      text: `Проверить инфраструктуру — ${monthErrorStats['Timeout/5xx'].count} тикетов с 5xx ошибками`
+    });
+  }
+
+  if (monthlyAtRiskClients.length > 0) {
+    monthlyRecommendations.push({
+      priority: 2,
+      text: `${monthlyAtRiskClients[0].name}: ${monthlyAtRiskClients[0].tickets} тикетов, ${monthlyAtRiskClients[0].open} открытых → назначить account manager`
+    });
+  }
+
+  if (monthErrorStats['Тариф недоступен']?.count >= 3) {
+    monthlyRecommendations.push({
+      priority: 3,
+      text: `Показывать причину недоступности тарифа в UI (${monthErrorStats['Тариф недоступен'].count} тикетов)`
+    });
+  }
+
+  if (monthErrorStats['Некорректный интервал']?.count >= 3) {
+    monthlyRecommendations.push({
+      priority: 2,
+      text: `Улучшить валидацию интервалов доставки (${monthErrorStats['Некорректный интервал'].count} тикетов)`
     });
   }
 
@@ -704,7 +785,9 @@ async function generateDashboardData() {
       },
       topIssues: topIssuesWithTrend,
       topClients: clientsWithHealth,
-      deliveryServices
+      deliveryServices,
+      risks: weeklyRisks.slice(0, 6),
+      recommendations: weeklyRecommendations.slice(0, 4)
     },
     // Monthly data (accumulated)
     month: {
@@ -715,15 +798,17 @@ async function generateDashboardData() {
       },
       topIssues: monthAnalysis.topIssues,
       topClients: monthlyTopClients,
-      deliveryServices: monthAnalysis.deliveryServices
+      deliveryServices: monthAnalysis.deliveryServices,
+      risks: monthlyRisks.slice(0, 6),
+      recommendations: monthlyRecommendations.slice(0, 4)
     },
     // Product health
     productAreas: productAreasList,
     atRiskClients,
     // Common
     weeklyTrend,
-    risks: risks.slice(0, 6),
-    recommendations: recommendations.slice(0, 4),
+    risks: weeklyRisks.slice(0, 6),
+    recommendations: weeklyRecommendations.slice(0, 4),
     channels: channelStats,
     // Legacy (for backward compatibility)
     kpi: {
