@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-28T13:22:30.627Z",
+  "generatedAt": "2026-04-28T13:30:17.612Z",
   "period": {
     "week": {
       "start": "2026-04-21T16:00:00.000Z",
@@ -20,9 +20,9 @@
         "trendLabel": "-21%"
       },
       "avgCloseTime": {
-        "value": 0.1,
-        "trend": 0,
-        "trendLabel": "0.0h"
+        "value": 7.1,
+        "trend": 7,
+        "trendLabel": "+7.0h"
       },
       "closeRate": {
         "value": 89.7,
@@ -331,7 +331,7 @@
     "kpi": {
       "totalTickets": 256,
       "closeRate": 96.9,
-      "avgCloseTime": 0.1
+      "avgCloseTime": 8.3
     },
     "topIssues": [
       {
@@ -903,9 +903,9 @@
       "trendLabel": "-21%"
     },
     "avgCloseTime": {
-      "value": 0.1,
-      "trend": 0,
-      "trendLabel": "0.0h"
+      "value": 7.1,
+      "trend": 7,
+      "trendLabel": "+7.0h"
     },
     "closeRate": {
       "value": 89.7,

@@ -218,11 +218,18 @@ function analyzeTickets(tickets, prevTickets = []) {
   const closedTickets = tickets.filter(t => t.status === 'closed').length;
   const closeRate = totalTickets > 0 ? (closedTickets / totalTickets * 100).toFixed(1) : 0;
 
-  const closingSpeeds = tickets
-    .filter(t => t.closing_speed && t.closing_speed > 0)
-    .map(t => t.closing_speed);
-  const avgCloseTime = closingSpeeds.length > 0
-    ? (closingSpeeds.reduce((a, b) => a + b, 0) / closingSpeeds.length / 3600).toFixed(1)
+  // Calculate real close time from created_at to closed_at/updated_at
+  const closeTimes = tickets
+    .filter(t => t.status === 'closed' && t.created_at)
+    .map(t => {
+      const created = new Date(t.created_at);
+      const closed = t.closed_at ? new Date(t.closed_at) : new Date(t.updated_at);
+      return (closed - created) / 1000; // seconds
+    })
+    .filter(seconds => seconds > 0 && seconds < 7 * 24 * 3600); // exclude outliers (>7 days)
+
+  const avgCloseTime = closeTimes.length > 0
+    ? (closeTimes.reduce((a, b) => a + b, 0) / closeTimes.length / 3600).toFixed(1)
     : 0;
 
   // Error stats
