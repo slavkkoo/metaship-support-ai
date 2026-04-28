@@ -42,3 +42,4 @@ credentials.json
 *.pem
 *.key
 github-secrets.txt
+.gstack/

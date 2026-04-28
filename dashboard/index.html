@@ -287,7 +287,72 @@
 
     .area-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
     .area-tickets { font-size: 24px; font-weight: 700; }
-    .area-issues { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+    .area-issues {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* Categories List */
+    .categories-list { display: flex; flex-direction: column; gap: 8px; }
+
+    .category-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      background: var(--bg-primary);
+      border-radius: var(--radius-md);
+    }
+
+    .category-info { display: flex; align-items: center; gap: 10px; }
+    .category-icon { font-size: 18px; }
+    .category-name { font-size: 14px; font-weight: 500; }
+    .category-count { font-size: 16px; font-weight: 600; color: var(--accent-blue); }
+
+    /* Breakdown Chart */
+    .breakdown-chart { padding: 10px 0; }
+
+    .breakdown-bar {
+      display: flex;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .breakdown-segment {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: white;
+      min-width: 40px;
+    }
+
+    .breakdown-segment.errors { background: var(--accent-red); }
+    .breakdown-segment.categories { background: var(--accent-blue); }
+    .breakdown-segment.uncategorized { background: var(--text-tertiary); }
+
+    .breakdown-legend { display: flex; flex-direction: column; gap: 10px; }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 14px;
+    }
+
+    .legend-label { display: flex; align-items: center; gap: 8px; }
+    .legend-dot { width: 12px; height: 12px; border-radius: 3px; }
+    .legend-dot.errors { background: var(--accent-red); }
+    .legend-dot.categories { background: var(--accent-blue); }
+    .legend-dot.uncategorized { background: var(--text-tertiary); }
+    .legend-value { font-weight: 600; }
 
     /* DS Grid */
     .ds-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
@@ -459,11 +524,11 @@
       </div>
     </div>
 
-    <!-- Issues & Product Areas -->
+    <!-- Issues & Categories -->
     <div class="dashboard-grid">
       <div class="card">
         <div class="card-header">
-          <div class="card-title">Top Issues</div>
+          <div class="card-title">🔴 System Errors</div>
           <div class="card-subtitle" id="issues-subtitle">This week</div>
         </div>
         <ul class="issues-list" id="issues-list">
@@ -473,10 +538,33 @@
 
       <div class="card">
         <div class="card-header">
+          <div class="card-title">📋 Support Categories</div>
+          <div class="card-subtitle" id="categories-subtitle">Regular inquiries</div>
+        </div>
+        <div class="categories-list" id="categories-list">
+          <div class="loading">Loading...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Areas -->
+    <div class="dashboard-grid" style="grid-template-columns: 1fr 1fr;">
+      <div class="card">
+        <div class="card-header">
           <div class="card-title">Product Areas</div>
           <div class="card-subtitle">By ticket volume</div>
         </div>
         <div class="areas-grid" id="areas-grid">
+          <div class="loading">Loading...</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Ticket Breakdown</div>
+          <div class="card-subtitle" id="breakdown-subtitle">Distribution</div>
+        </div>
+        <div class="breakdown-chart" id="breakdown-chart">
           <div class="loading">Loading...</div>
         </div>
       </div>
@@ -626,21 +714,26 @@
         document.getElementById('kpi-close-rate-trend').textContent = '';
       }
 
-      // At Risk KPI
-      const atRisk = data.atRiskClients || [];
+      // At Risk KPI (use period-specific data)
+      const atRisk = periodData.atRiskClients || data.atRiskClients || [];
       document.getElementById('kpi-at-risk').textContent = atRisk.length;
       document.getElementById('kpi-at-risk-items').textContent =
         atRisk.length > 0 ? atRisk.slice(0, 2).map(c => c.name).join(', ') : 'All clients healthy';
 
       // Subtitles
-      document.getElementById('issues-subtitle').textContent = currentPeriod === 'week' ? 'This week' : 'Last 4 weeks';
-      document.getElementById('clients-subtitle').textContent = currentPeriod === 'week' ? 'This week' : 'Last 4 weeks';
+      const periodLabel = currentPeriod === 'week' ? 'This week' : 'Last 4 weeks';
+      document.getElementById('issues-subtitle').textContent = periodLabel;
+      document.getElementById('clients-subtitle').textContent = periodLabel;
+      document.getElementById('categories-subtitle').textContent = periodLabel;
+      document.getElementById('breakdown-subtitle').textContent = periodLabel;
 
       // Render sections
       renderTrendChart(data.weeklyTrend);
-      renderAtRiskClients(data.atRiskClients);
+      renderAtRiskClients(periodData.atRiskClients || data.atRiskClients);
       renderIssues(periodData.topIssues);
-      renderProductAreas(data.productAreas);
+      renderCategories(periodData.ticketCategories);
+      renderBreakdown(periodData.ticketBreakdown, currentPeriod === 'week' ? periodData.kpi.totalTickets.value : periodData.kpi.totalTickets);
+      renderProductAreas(periodData.productAreas || data.productAreas);
       renderClients(periodData.topClients);
       renderDeliveryServices(periodData.deliveryServices);
       renderRisks(periodData.risks || data.risks);
@@ -753,6 +846,59 @@
       }).join('');
     }
 
+    function renderCategories(categories) {
+      const container = document.getElementById('categories-list');
+      if (!categories || categories.length === 0) {
+        container.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--text-secondary);">No categories</div>';
+        return;
+      }
+
+      container.innerHTML = categories.slice(0, 8).map(cat => `
+        <div class="category-item">
+          <div class="category-info">
+            <span class="category-icon">${cat.icon}</span>
+            <span class="category-name">${cat.name}</span>
+          </div>
+          <span class="category-count">${cat.count}</span>
+        </div>
+      `).join('');
+    }
+
+    function renderBreakdown(breakdown, total) {
+      const container = document.getElementById('breakdown-chart');
+      if (!breakdown) {
+        container.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--text-secondary);">No data</div>';
+        return;
+      }
+
+      const { withErrors, withCategories, uncategorized } = breakdown;
+      const errPct = Math.round(withErrors / total * 100);
+      const catPct = Math.round(withCategories / total * 100);
+      const uncPct = Math.round(uncategorized / total * 100);
+
+      container.innerHTML = `
+        <div class="breakdown-bar">
+          <div class="breakdown-segment errors" style="width: ${errPct}%" title="System Errors: ${withErrors}">${errPct}%</div>
+          <div class="breakdown-segment categories" style="width: ${catPct}%" title="Categorized: ${withCategories}">${catPct}%</div>
+          <div class="breakdown-segment uncategorized" style="width: ${uncPct}%" title="Other: ${uncategorized}">${uncPct}%</div>
+        </div>
+        <div class="breakdown-legend">
+          <div class="legend-item">
+            <span class="legend-label"><span class="legend-dot errors"></span> System Errors</span>
+            <span class="legend-value">${withErrors}</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-label"><span class="legend-dot categories"></span> Categorized</span>
+            <span class="legend-value">${withCategories}</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-label"><span class="legend-dot uncategorized"></span> Other</span>
+            <span class="legend-value">${uncategorized}</span>
+          </div>
+        </div>
+      `;
+    }
+
     function renderProductAreas(areas) {
       const grid = document.getElementById('areas-grid');
       if (!areas || areas.length === 0) {
@@ -760,13 +906,16 @@
         return;
       }
 
-      grid.innerHTML = areas.slice(0, 6).map(area => `
-        <div class="area-card ${area.severity}">
-          <div class="area-name">${area.name}</div>
-          <div class="area-tickets">${area.tickets}</div>
-          <div class="area-issues">${area.issues.slice(0, 2).map(i => i.name).join(', ')}</div>
-        </div>
-      `).join('');
+      grid.innerHTML = areas.slice(0, 6).map(area => {
+        const issuesText = area.issues.slice(0, 2).map(i => i.name).join(', ');
+        return `
+          <div class="area-card ${area.severity}">
+            <div class="area-name">${area.name}</div>
+            <div class="area-tickets">${area.tickets}</div>
+            <div class="area-issues" title="${issuesText}">${issuesText}</div>
+          </div>
+        `;
+      }).join('');
     }
 
     function renderClients(clients) {

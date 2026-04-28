@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-28T13:06:45.069Z",
+  "generatedAt": "2026-04-28T13:22:30.627Z",
   "period": {
     "week": {
       "start": "2026-04-21T16:00:00.000Z",
@@ -159,6 +159,7 @@
         "healthStatus": "healthy"
       }
     ],
+    "atRiskClients": [],
     "deliveryServices": [
       {
         "name": "Pony Express",
@@ -191,6 +192,122 @@
         "status": "stable"
       }
     ],
+    "productAreas": [
+      {
+        "name": "Order API",
+        "tickets": 4,
+        "issues": [
+          {
+            "name": "Ошибка создания заказа",
+            "count": 4
+          }
+        ],
+        "severity": "critical"
+      },
+      {
+        "name": "Data Validation",
+        "tickets": 2,
+        "issues": [
+          {
+            "name": "Ошибка валидации",
+            "count": 2
+          }
+        ],
+        "severity": "low"
+      },
+      {
+        "name": "Infrastructure",
+        "tickets": 1,
+        "issues": [
+          {
+            "name": "Timeout/5xx",
+            "count": 1
+          }
+        ],
+        "severity": "critical"
+      },
+      {
+        "name": "Тарификация",
+        "tickets": 1,
+        "issues": [
+          {
+            "name": "Тариф недоступен",
+            "count": 1
+          }
+        ],
+        "severity": "high"
+      },
+      {
+        "name": "API валидация",
+        "tickets": 1,
+        "issues": [
+          {
+            "name": "Некорректный интервал",
+            "count": 1
+          }
+        ],
+        "severity": "high"
+      },
+      {
+        "name": "Webhooks",
+        "tickets": 1,
+        "issues": [
+          {
+            "name": "Webhook не работает",
+            "count": 1
+          }
+        ],
+        "severity": "low"
+      },
+      {
+        "name": "Documents",
+        "tickets": 1,
+        "issues": [
+          {
+            "name": "Этикетка/Накладная",
+            "count": 1
+          }
+        ],
+        "severity": "low"
+      }
+    ],
+    "ticketCategories": [
+      {
+        "name": "Интеграция/API",
+        "count": 21,
+        "icon": "🔌"
+      },
+      {
+        "name": "Тарифы и расчёт",
+        "count": 3,
+        "icon": "💰"
+      },
+      {
+        "name": "ПВЗ/Адреса",
+        "count": 3,
+        "icon": "📍"
+      },
+      {
+        "name": "Статус заказа",
+        "count": 2,
+        "icon": "📦"
+      },
+      {
+        "name": "Изменение заказа",
+        "count": 2,
+        "icon": "✏️"
+      },
+      {
+        "name": "Документы",
+        "count": 1,
+        "icon": "📄"
+      }
+    ],
+    "ticketBreakdown": {
+      "withErrors": 9,
+      "withCategories": 32,
+      "uncategorized": 17
+    },
     "risks": [
       {
         "level": "critical",
@@ -348,6 +465,16 @@
         "healthStatus": "healthy"
       }
     ],
+    "atRiskClients": [
+      {
+        "name": "ИП Ладная Лидия",
+        "tickets": 8,
+        "open": 1,
+        "mainIssue": "Timeout/5xx",
+        "healthScore": 21,
+        "healthStatus": "warning"
+      }
+    ],
     "deliveryServices": [
       {
         "name": "Почта России",
@@ -392,6 +519,143 @@
         "status": "stable"
       }
     ],
+    "productAreas": [
+      {
+        "name": "Order API",
+        "tickets": 14,
+        "issues": [
+          {
+            "name": "Ошибка создания заказа",
+            "count": 14
+          }
+        ],
+        "severity": "critical"
+      },
+      {
+        "name": "Infrastructure",
+        "tickets": 8,
+        "issues": [
+          {
+            "name": "Timeout/5xx",
+            "count": 8
+          }
+        ],
+        "severity": "critical"
+      },
+      {
+        "name": "API валидация",
+        "tickets": 6,
+        "issues": [
+          {
+            "name": "Некорректный интервал",
+            "count": 6
+          }
+        ],
+        "severity": "high"
+      },
+      {
+        "name": "Auth",
+        "tickets": 5,
+        "issues": [
+          {
+            "name": "Ошибка авторизации",
+            "count": 5
+          }
+        ],
+        "severity": "critical"
+      },
+      {
+        "name": "Documents",
+        "tickets": 4,
+        "issues": [
+          {
+            "name": "Этикетка/Накладная",
+            "count": 4
+          }
+        ],
+        "severity": "low"
+      },
+      {
+        "name": "Data Validation",
+        "tickets": 4,
+        "issues": [
+          {
+            "name": "Ошибка валидации",
+            "count": 4
+          }
+        ],
+        "severity": "low"
+      },
+      {
+        "name": "Тарификация",
+        "tickets": 1,
+        "issues": [
+          {
+            "name": "Тариф недоступен",
+            "count": 1
+          }
+        ],
+        "severity": "high"
+      },
+      {
+        "name": "Webhooks",
+        "tickets": 1,
+        "issues": [
+          {
+            "name": "Webhook не работает",
+            "count": 1
+          }
+        ],
+        "severity": "low"
+      }
+    ],
+    "ticketCategories": [
+      {
+        "name": "Интеграция/API",
+        "count": 64,
+        "icon": "🔌"
+      },
+      {
+        "name": "ПВЗ/Адреса",
+        "count": 29,
+        "icon": "📍"
+      },
+      {
+        "name": "Документы",
+        "count": 8,
+        "icon": "📄"
+      },
+      {
+        "name": "Тарифы и расчёт",
+        "count": 8,
+        "icon": "💰"
+      },
+      {
+        "name": "Статус заказа",
+        "count": 7,
+        "icon": "📦"
+      },
+      {
+        "name": "Изменение заказа",
+        "count": 6,
+        "icon": "✏️"
+      },
+      {
+        "name": "Личный кабинет",
+        "count": 5,
+        "icon": "👤"
+      },
+      {
+        "name": "Возврат/Отмена",
+        "count": 4,
+        "icon": "↩️"
+      }
+    ],
+    "ticketBreakdown": {
+      "withErrors": 32,
+      "withCategories": 131,
+      "uncategorized": 93
+    },
     "risks": [
       {
         "level": "critical",

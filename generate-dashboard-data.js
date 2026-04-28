@@ -65,6 +65,42 @@ const SYSTEM_ERRORS = {
   },
 };
 
+// Regular ticket categories (non-error inquiries)
+const TICKET_CATEGORIES = {
+  'Статус заказа': {
+    pattern: /где\s*заказ|где\s*посылк|статус|отслежив|трек|track|когда\s*доставят|когда\s*приед/i,
+    icon: '📦'
+  },
+  'Тарифы и расчёт': {
+    pattern: /тариф|стоимость|цена|сколько\s*стоит|расчёт|калькулятор|прайс/i,
+    icon: '💰'
+  },
+  'Интеграция/API': {
+    pattern: /api|интеграц|подключ|документац|swagger|endpoint|запрос/i,
+    icon: '🔌'
+  },
+  'Возврат/Отмена': {
+    pattern: /возврат|отмен|cancel|refund|вернуть|отказ/i,
+    icon: '↩️'
+  },
+  'Изменение заказа': {
+    pattern: /измен|редактир|поменять|изменить\s*адрес|перенос/i,
+    icon: '✏️'
+  },
+  'Документы': {
+    pattern: /акт|счёт|счет|invoice|документ|закрывающ|бухгалтер/i,
+    icon: '📄'
+  },
+  'Личный кабинет': {
+    pattern: /личн.*кабинет|логин|пароль|регистрац|доступ|аккаунт/i,
+    icon: '👤'
+  },
+  'ПВЗ/Адреса': {
+    pattern: /пвз|адрес|точк.*выдач|самовывоз|pickup|склад/i,
+    icon: '📍'
+  },
+};
+
 // Known clients
 const KNOWN_CLIENTS = [
   [/валта/i, 'ВАЛТА'],
@@ -118,6 +154,22 @@ function extractDS(text) {
     if (pattern.test(text)) ds.push(name);
   }
   return ds;
+}
+
+function extractCategory(text) {
+  if (!text) return null;
+  for (const [name, cfg] of Object.entries(TICKET_CATEGORIES)) {
+    if (cfg.pattern.test(text)) return name;
+  }
+  return null;
+}
+
+function hasSystemError(text) {
+  if (!text) return false;
+  for (const [_, cfg] of Object.entries(SYSTEM_ERRORS)) {
+    if (cfg.pattern.test(text)) return true;
+  }
+  return false;
 }
 
 function getWeekRange(weeksAgo = 0) {
@@ -197,6 +249,40 @@ function analyzeTickets(tickets, prevTickets = []) {
       area: data.area
     }));
 
+  // Category stats (for tickets without system errors)
+  const categoryStats = {};
+  let ticketsWithErrors = 0;
+  let ticketsWithCategories = 0;
+  let uncategorizedTickets = 0;
+
+  for (const t of tickets) {
+    const text = (t.subject || '') + ' ' + (t.first_message_text || '');
+    const hasError = hasSystemError(text);
+
+    if (hasError) {
+      ticketsWithErrors++;
+    } else {
+      const category = extractCategory(text);
+      if (category) {
+        ticketsWithCategories++;
+        if (!categoryStats[category]) {
+          categoryStats[category] = { count: 0, icon: TICKET_CATEGORIES[category].icon };
+        }
+        categoryStats[category].count++;
+      } else {
+        uncategorizedTickets++;
+      }
+    }
+  }
+
+  const ticketCategories = Object.entries(categoryStats)
+    .sort((a, b) => b[1].count - a[1].count)
+    .map(([name, data]) => ({
+      name,
+      count: data.count,
+      icon: data.icon
+    }));
+
   // Client stats
   const clientStats = {};
   for (const t of tickets) {
@@ -269,7 +355,13 @@ function analyzeTickets(tickets, prevTickets = []) {
     topIssues,
     topClients,
     deliveryServices,
-    errorStats
+    errorStats,
+    ticketCategories,
+    ticketBreakdown: {
+      withErrors: ticketsWithErrors,
+      withCategories: ticketsWithCategories,
+      uncategorized: uncategorizedTickets
+    }
   };
 }
 
@@ -486,7 +578,7 @@ async function generateDashboardData() {
     return { ...issue, trend, prevCount };
   });
 
-  // === PRODUCT AREAS ===
+  // === PRODUCT AREAS (weekly) ===
   const productAreas = {};
   for (const [errorName, cfg] of Object.entries(SYSTEM_ERRORS)) {
     const area = cfg.area;
@@ -505,6 +597,35 @@ async function generateDashboardData() {
   }
 
   const productAreasList = Object.entries(productAreas)
+    .filter(([_, data]) => data.tickets > 0)
+    .sort((a, b) => b[1].tickets - a[1].tickets)
+    .map(([name, data]) => ({
+      name,
+      tickets: data.tickets,
+      issues: data.issues.sort((a, b) => b.count - a.count),
+      severity: data.severity
+    }));
+
+  // === PRODUCT AREAS (monthly) ===
+  const monthlyProductAreas = {};
+  const monthErrorStats = monthAnalysis.errorStats;
+  for (const [errorName, cfg] of Object.entries(SYSTEM_ERRORS)) {
+    const area = cfg.area;
+    if (!monthlyProductAreas[area]) {
+      monthlyProductAreas[area] = { tickets: 0, issues: [], severity: 'low' };
+    }
+    const count = monthErrorStats[errorName]?.count || 0;
+    if (count > 0) {
+      monthlyProductAreas[area].tickets += count;
+      monthlyProductAreas[area].issues.push({ name: errorName, count });
+      if (cfg.severity === 'critical') monthlyProductAreas[area].severity = 'critical';
+      else if (cfg.severity === 'high' && monthlyProductAreas[area].severity !== 'critical') {
+        monthlyProductAreas[area].severity = 'high';
+      }
+    }
+  }
+
+  const monthlyProductAreasList = Object.entries(monthlyProductAreas)
     .filter(([_, data]) => data.tickets > 0)
     .sort((a, b) => b[1].tickets - a[1].tickets)
     .map(([name, data]) => ({
@@ -648,7 +769,6 @@ async function generateDashboardData() {
 
   // === MONTHLY RISKS ===
   const monthlyRisks = [];
-  const monthErrorStats = monthAnalysis.errorStats;
 
   const monthlyCriticalErrors = Object.entries(monthErrorStats)
     .filter(([_, data]) => data.severity === 'critical' && data.count >= 5);
@@ -675,8 +795,9 @@ async function generateDashboardData() {
   // Monthly at-risk clients
   const monthlyAtRiskClients = monthlyTopClients
     .filter(c => c.healthStatus === 'critical' || c.healthStatus === 'warning')
-    .slice(0, 3);
-  for (const client of monthlyAtRiskClients) {
+    .sort((a, b) => b.healthScore - a.healthScore)
+    .slice(0, 5);
+  for (const client of monthlyAtRiskClients.slice(0, 3)) {
     monthlyRisks.push({
       level: client.healthStatus,
       title: `Клиент: ${client.name}`,
@@ -785,7 +906,11 @@ async function generateDashboardData() {
       },
       topIssues: topIssuesWithTrend,
       topClients: clientsWithHealth,
+      atRiskClients,
       deliveryServices,
+      productAreas: productAreasList,
+      ticketCategories: weekAnalysis.ticketCategories,
+      ticketBreakdown: weekAnalysis.ticketBreakdown,
       risks: weeklyRisks.slice(0, 6),
       recommendations: weeklyRecommendations.slice(0, 4)
     },
@@ -798,7 +923,11 @@ async function generateDashboardData() {
       },
       topIssues: monthAnalysis.topIssues,
       topClients: monthlyTopClients,
+      atRiskClients: monthlyAtRiskClients,
       deliveryServices: monthAnalysis.deliveryServices,
+      productAreas: monthlyProductAreasList,
+      ticketCategories: monthAnalysis.ticketCategories,
+      ticketBreakdown: monthAnalysis.ticketBreakdown,
       risks: monthlyRisks.slice(0, 6),
       recommendations: monthlyRecommendations.slice(0, 4)
     },

@@ -38,7 +38,7 @@ const CONFIG = {
 
   // Ingestion settings
   ingestion: {
-    daysToFetch: 7, // Fetch tickets from last N days
+    daysToFetch: 30, // Fetch tickets from last N days
     pageSize: 100, // Tickets per API page
     maxPages: 50, // Safety limit to prevent infinite loops
   },
